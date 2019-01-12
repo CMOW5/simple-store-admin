@@ -25,7 +25,7 @@ export default class CategoriesRequest {
     return new Promise((resolve, reject) => {
       httpRequester.get(url)
         .then((response) => {
-          const count = response.data.data;
+          const count = response.data.content || 0;
           resolve(count);
         })
         .catch((error) => {
