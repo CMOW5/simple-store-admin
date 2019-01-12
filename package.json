@@ -1,0 +1,39 @@
+{
+  "homepage": "https://cmow5.github.io/inspiration-admin",
+  "name": "inspiration-admin",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bulma": "^0.7.1",
+    "connected-react-router": "^4.3.0",
+    "cross-env": "^5.1.5",
+    "faker": "^4.1.0",
+    "lodash": "^4.17.10",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_PATH=./src npm run start",
+    "start": "react-scripts start",
+    "build": "cross-env NODE_PATH=./src react-scripts build",
+    "test-react": "cross-env NODE_PATH=./src npm run test",
+    "test:debug": "react-scripts --inspect-brk test --runInBand --env=jsdom",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "reset": "rm -rf node_modules & rm package-lock.json & npm cache clear --force & npm install"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1",
+    "gh-pages": "^1.2.0",
+    "react-test-renderer": "^16.4.2"
+  }
+}

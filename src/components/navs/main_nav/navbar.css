@@ -1,0 +1,22 @@
+.navbar {
+  margin-bottom: 1rem;
+  z-index: 1 !important;
+}
+
+.side-nav-toggler {
+  display: none !important;
+}
+
+/* Mobile HD */
+@media screen and (min-width: 350px) and (max-width: 760px){
+  .side-nav-toggler {
+    display: block !important;
+  }
+}
+
+/* Mobile LD */
+@media screen and (max-width: 350px) {
+  .side-nav-toggler {
+    display: block !important;
+  }
+} 

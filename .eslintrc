@@ -1,0 +1,6 @@
+{
+  "extends": ["react-app","google"],
+  "rules" : {
+    "indent": ["error", 2]
+  }
+}

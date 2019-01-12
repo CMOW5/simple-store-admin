@@ -1,0 +1,59 @@
+
+.icon-container {
+  height: 35%;
+  text-align: center;
+  padding-top: 1rem;
+  /* background-color: green; */
+}
+
+.card-title {
+  height: 15%;
+  text-align: center;
+  padding: 0.5rem 0.3rem;
+  font-size: 1.5rem;
+  /* background: yellow; */
+}
+
+.card-text {
+  height: 30%;
+  text-align: center;
+  padding: 2rem 0.5rem;
+  font-size: 1rem;
+  /* background: blue;   */
+}
+
+footer {
+  height: 20%;
+  text-align: center;
+  padding: 1rem 0.5rem;
+ /*  background-color: red;   */
+}
+
+section {
+  border-radius: 0.2rem;
+}
+
+/*
+
+.cont {
+  position: relative;
+  color: white;
+}
+
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+<div class="cont">
+
+   <img className="back" src="http://lorempixel.com/500/600/"/>
+   the other elements
+</div>
+
+*/
