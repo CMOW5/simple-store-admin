@@ -14,6 +14,9 @@ import ProductRoutes from 'router/routes/products-routes';
 /* api */
 import ProductsRequest from 'services/api/products/products-request';
 
+/* models */
+import Product from 'models/product';
+
 /* utils */
 // import Logger from 'utils/logger/logger';
 
@@ -36,9 +39,7 @@ class ShowProduct extends Component {
     super(props);
     this.state = {
       id: this.props.match.params.id,
-      product: {
-        images: [],
-      },
+      product: new Product(),
       isFetching: true,
     };
     this.hiddenFields = [
@@ -62,9 +63,9 @@ class ShowProduct extends Component {
    * @param {*} id
    */
   async getProduct(id) {
-    const product = await ProductsRequest.getProduct(id);
+    const productData = await ProductsRequest.getProduct(id);
     this.setState({
-      product: product,
+      product: new Product(productData),
       isFetching: false,
     });
   }
