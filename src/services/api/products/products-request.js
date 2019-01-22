@@ -4,6 +4,9 @@ import ProductsUrls from '../urls/products-urls';
 /* utils */
 import Logger from 'utils/logger/logger';
 
+const responseContentKey = 'content';
+
+// TODO: this class should returns instances of Product
 /**
  * Service to make http request related to the products admin
  */
@@ -25,7 +28,7 @@ export default class ProductsRequest {
     return new Promise((resolve, reject) => {
       HttpRequester.get(url)
         .then((response) => {
-          const count = response.data.content || 0;
+          const count = response.data[responseContentKey] || 0;
           resolve(count);
         })
         .catch((error) => {
@@ -49,7 +52,7 @@ export default class ProductsRequest {
       HttpRequester.get(url)
         .then((response) => {
           // const products = response.data.content;
-          const products = response.data.content;
+          const products = response.data[responseContentKey];
           const paginator = response.data.paginator;
           resolve({paginator: paginator, products: products});
         })
@@ -71,7 +74,7 @@ export default class ProductsRequest {
     return new Promise((resolve, reject) => {
       HttpRequester.get(url)
         .then((response) => {
-          const product = response.data.data;
+          const product = response.data[responseContentKey];
           resolve(product);
         })
         .catch((error) => {
