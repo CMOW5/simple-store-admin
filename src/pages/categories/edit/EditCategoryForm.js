@@ -8,6 +8,9 @@ import RouterHandler from 'router/router-handler';
 import categoriesRequest from 'services/api/categories/categories-request';
 import categoriesRoutes from 'router/routes/categories-routes';
 
+/* models */
+import Category from 'models/category';
+
 /* utils */
 import Form from 'utils/form/form';
 import Logger from 'utils/logger/logger';
@@ -34,29 +37,42 @@ class EditCategoryForm extends Component {
     super(props);
     this.state = {
       id: this.props.match.params.id,
-      name: '',
-      parent_id: '',
-      image: [],
+      category: new Category(),
       categories: [],
+
+
       imageIdToDelete: null,
       newImage: [],
+
       showEditedModal: false,
       showEditingModal: false,
-      isFetching: true,
+      showLoadingIcon: true,
+
+      /*
+        this form instance is used to send the data to the api
+        with the given structure
+      */
       form: new Form({
         name: '',
-        parent_id: '',
+        parentCategory: null,
       }),
     };
-    this.fetchAllCategories = this.fetchAllCategories.bind(this);
-    this.saveImage = this.saveImage.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.sendForm = this.sendForm.bind(this);
+
+    // TODO: replace the bindings with the new () => arrow function
+    // method bindings
+
+    /* UI events */
     this.onCancelButtonClicked = this.onCancelButtonClicked.bind(this);
-    this.showCategoryEditedModal = this.showCategoryEditedModal.bind(this);
     this.goToShowCategory = this.goToShowCategory.bind(this);
     this.goToCategoriesList = this.goToCategoriesList.bind(this);
+    this.saveImage = this.saveImage.bind(this);
+
+    /* UI form handlers */
+    this.handleParentCategoryChange
+      = this.handleParentCategoryChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.sendForm = this.sendForm.bind(this);
 
     /* helpers to calculate the form styles */
     this.inputClass = this.inputClass.bind(this);
@@ -67,6 +83,18 @@ class EditCategoryForm extends Component {
     this.renderError = this.renderError.bind(this);
     this.renderCategoryForm = this.renderCategoryForm.bind(this);
     this.renderCategoryInfo = this.renderCategoryInfo.bind(this);
+
+    /* update state helpers */
+    this.saveFormToState = this.saveFormToState.bind(this);
+    this.showEditedModal = this.showEditedModal.bind(this);
+    this.closeEditedModal = this.closeEditedModal.bind(this);
+    this.showEditingModal = this.showEditingModal.bind(this);
+    this.closeEditingModal = this.closeEditingModal.bind(this);
+
+    /* helpers */
+    this.isTheCurrentEditedCategory
+      = this.isTheCurrentEditedCategory.bind(this);
+    this.filterCategories = this.filterCategories.bind(this);
   }
 
   /**
@@ -79,20 +107,44 @@ class EditCategoryForm extends Component {
     ])
       .then(([category, categories]) => {
         this.setState({
-          categories: categories.filter((category) => {
-            return category.id !== parseInt(this.state.id, 10);
-          }),
-          ...category,
-          image: category.image ? [category.image] : [],
-          isFetching: false,
+          categories: this.filterCategories(categories),
+          category: category,
+
+          // image: category.image ? [category.image] : [],
+          showLoadingIcon: false,
         });
       });
   }
 
   /**
+   * remove the current category from the list of categories
+   * @param {array} categories
+   * @return {array} array of filtered categories
+   */
+  filterCategories(categories) {
+    return categories.filter((category) => {
+      return !this.isTheCurrentEditedCategory(category);
+    });
+  }
+
+  /**
+   * validate if the given category id is equal
+   * to the current category id being edited
+   *
+   * @param {*} category
+   * @return {boolean}
+   */
+  isTheCurrentEditedCategory(category) {
+    if (!category) {
+      return false;
+    }
+    return category.id == this.state.id;
+  }
+
+  /**
    * fetch the cateogory with the given id
    * @param {*} id
-   * @return {Object}
+   * @return {Category}
    */
   async fetchCategory(id) {
     const category = await categoriesRequest.fetchCategory(id);
@@ -101,7 +153,7 @@ class EditCategoryForm extends Component {
 
   /**
    * fetch the categories from the db
-   * @return {Object}
+   * @return {array} an array containing the categories
    */
   async fetchAllCategories() {
     const {categories} = await categoriesRequest.fetchAllCategories();
@@ -121,34 +173,50 @@ class EditCategoryForm extends Component {
   }
 
   /**
-   * handle the changes in the form fields
+   * handle the changes in the name form field
    * @param {*} event
    */
-  handleInputChange(event) {
+  handleNameChange(event) {
     const target = event.target;
-    const name = target.name;
-    let value = target.type === 'checkbox' ? target.checked : target.value;
+    const newName = target.value;
+    let category = this.state.category;
+    category.name = newName;
     this.setState({
-      [name]: value,
+      category: category,
     });
   }
 
   /**
-   * submit the form
+   * handle the changes in the parent category form field
+   * @param {*} event
+   */
+  handleParentCategoryChange(event) {
+    const target = event.target;
+    let newParentCategory = target.value;
+    let category = this.state.category;
+    category.parentCategory.id = newParentCategory;
+    this.setState({
+      category: category,
+    });
+  }
+
+  /**
+   * prepare the data that is going to be sent to the api
    * @param {*} event
    */
   handleSubmit(event) {
     event.preventDefault();
     let form = new Form({
-      name: this.state.name,
-      parent_id: this.state.parent_id,
+      name: this.state.category.name,
+      parentCategory: this.state.category.parentCategory.id,
       imageIdToDelete: this.state.imageIdToDelete,
     });
     form.appendFiles('image', this.state.newImage);
-    form.setPutMethod();
+    // form.setPutMethod();
     this.setState({
       form: form,
-      showEditingModal: true,
+      // TODO: refactor this in a function to open the editing modal
+      // showEditingModal: true,
     }, this.sendForm);
   }
 
@@ -158,30 +226,69 @@ class EditCategoryForm extends Component {
   sendForm() {
     const formData = this.state.form.getFormData();
     const id = this.state.id;
-
+    return;
     categoriesRequest.updateCategory(id, formData)
       .then((category) => {
         Logger.log('category updated = ', category);
-        this.showCategoryEditedModal();
+        return;
+        this.closeEditingModal();
+        this.showEditedModal();
       })
       .catch((error) => {
         Logger.log('error = ', error);
+        return;
         const form = this.state.form;
         form.saveErrors(error);
-        this.setState({
-          form: form,
-          showEditingModal: false,
-        });
+        this.saveFormToState(form);
+        this.closeEditingModal();
       });
   }
 
   /**
-   * shows the created category modal
+   * update the form's state
+   * @param {Form} form
    */
-  showCategoryEditedModal() {
+  saveFormToState(form) {
+    this.setState({
+      form: form,
+    });
+  }
+
+  /**
+   * updates the state to show a editing modal
+   */
+  showEditingModal() {
+    this.setState({
+      showEditingModal: true,
+    });
+  }
+
+  /**
+   * updates the state to close the editing modal
+   */
+  closeEditingModal() {
+    this.setState({
+      showEditingModal: false,
+    });
+  }
+
+  /**
+   * updates the state to show a modal
+   * with a message that the category was successfully updated
+   */
+  showEditedModal() {
     this.setState({
       showEditedModal: true,
-      showEditingModal: false,
+    });
+  }
+
+  /**
+   * updates the state to close the modal
+   * with a message that the category was successfully updated
+   */
+  closeEditedModal() {
+    this.setState({
+      showEditedModal: false,
     });
   }
 
@@ -213,7 +320,7 @@ class EditCategoryForm extends Component {
   }
 
   /**
-   * render the options in th category dropdown
+   * render the options in the category dropdown
    * @return {ReactNode}
    */
   renderCategoriesOptions() {
@@ -281,7 +388,7 @@ class EditCategoryForm extends Component {
    * @return {ReactNode}
    */
   renderCategoryInfo() {
-    if (this.state.isFetching) {
+    if (this.state.showLoadingIcon) {
       return <Loading show="true" title="category" />;
     } else {
       return this.renderCategoryForm();
@@ -303,8 +410,8 @@ class EditCategoryForm extends Component {
               name="name"
               type="text"
               placeholder="name"
-              value={this.state.name}
-              onChange={this.handleInputChange}
+              value={this.state.category.name}
+              onChange={this.handleNameChange}
             />
           </div>
 
@@ -317,9 +424,9 @@ class EditCategoryForm extends Component {
           <div className="control">
             <div className="select">
               <select
-                name="parent_id"
-                onChange={this.handleInputChange}
-                value={this.state.parent_id || ''}
+                name="parentCategory"
+                onChange={this.handleParentCategoryChange}
+                value={this.state.category.parentCategory.id || ''}
               >
                 {/* default option */}
                 <option value=''>Main Menu</option>
@@ -328,7 +435,7 @@ class EditCategoryForm extends Component {
             </div>
           </div>
 
-          {this.renderError('parent_id')}
+          {this.renderError('parentCategory')}
 
         </div>
 
@@ -337,7 +444,7 @@ class EditCategoryForm extends Component {
           <label className="label">Images</label>
           <div className="control">
             <ImageEditor
-              initImages={this.state.image}
+              initImages={[this.state.category.image]}
               onImagesLoaded={this.saveImage}
               singleImage={true}
             />
@@ -381,6 +488,7 @@ class EditCategoryForm extends Component {
 
         {this.renderCategoryInfo()}
 
+        {/* modals */}
         <SimpleNotification
           show = {this.state.showEditedModal}
           message = "category edited!!"
@@ -400,3 +508,27 @@ class EditCategoryForm extends Component {
 }
 
 export default withRouter(EditCategoryForm);
+
+
+/* axios({
+  method: 'put',
+  url: 'http://localhost:8000/api/admin/categories/348',
+
+  headers: {
+    'Accept': 'application/json',
+    'Content-type': 'application/json',
+    // "Authorization": "Bearer " + sessionStorage.getItem('jwt')
+  },
+
+  // responseType:'stream'
+  data: {
+    name: 'some name',
+    parentCategory: 345,
+  },
+})
+  .then(function(response) {
+    console.log(response);
+  })
+  .catch(function(error) {
+    console.log(error);
+  }); */
