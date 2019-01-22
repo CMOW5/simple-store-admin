@@ -71,8 +71,7 @@ class CategoriesList extends Component {
   }
 
   /**
-   * notify the parent that the see see button was clicked
-   * @param {number} id category id
+   * go to the create category page
    */
   createCategory() {
     const route = categoriesRoutes.create();
@@ -80,20 +79,20 @@ class CategoriesList extends Component {
   }
 
   /**
-   * notify the parent that the see see button was clicked
-   * @param {number} id category id
+   * show the given category
+   * @param {Category} category category id
    */
-  showCategory(id) {
-    const route = categoriesRoutes.show(id);
+  showCategory(category) {
+    const route = categoriesRoutes.show(category.id);
     routerHandler.goTo(this.props.history, route);
   }
 
   /**
-   * notify the parent that the see edit button was clicked
-   * @param {number} id category id
+   * edit the given category
+   * @param {Category} category category id
    */
-  editCategory(id) {
-    const route = categoriesRoutes.edit(id);
+  editCategory(category) {
+    const route = categoriesRoutes.edit(category.id);
     routerHandler.goTo(this.props.history, route);
   }
 
@@ -181,7 +180,7 @@ class CategoriesList extends Component {
 
     const categoriesRows = categories.map((category) => {
       return <SingleCategoryRow
-        category = {new Category(category)}
+        category = {category}
         key = {category.id}
         onSeeButtonClicked = {this.showCategory}
         onEditButtonClicked = {this.editCategory}
