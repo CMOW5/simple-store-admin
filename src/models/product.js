@@ -6,7 +6,7 @@ export default class Product {
   /**
    * @param {object} initialProductData
    */
-  constructor(initialProductData) {
+  constructor(initialProductData = {}) {
     this.id = initialProductData.id || '';
     this.name = initialProductData.name || '';
     this.description = initialProductData.description || '';
