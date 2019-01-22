@@ -18,14 +18,14 @@ export default class SingleCategoryRow extends Component {
    * notify the parent that the see see button was clicked
    */
   onSeeButtonClicked() {
-    this.props.onSeeButtonClicked(this.props.category.id);
+    this.props.onSeeButtonClicked(this.props.category);
   }
 
   /**
    * notify the parent that the see edit button was clicked
    */
   onEditButtonClicked() {
-    this.props.onEditButtonClicked(this.props.category.id);
+    this.props.onEditButtonClicked(this.props.category);
   }
 
   /**
@@ -40,18 +40,19 @@ export default class SingleCategoryRow extends Component {
    */
   render() {
     const name = this.props.category.name;
-    const parent = this.props.category.parentCategory;
-    const image
-      = this.props.category.image ? this.props.category.image.url : '';
+    // TODO: render something instead of null when the parent category is null
+    const parentCategoryName = this.props.category.parentCategory.name;
+    const imageUrl
+      = this.props.category.image.url ? this.props.category.image.url : '';
 
     return (
 
       <tr>
         <td>{name}</td>
-        <td>{parent}</td>
+        <td>{parentCategoryName}</td>
         <td>
           <img
-            src={image}
+            src={imageUrl}
             className="image is-96x96" alt="category" />
         </td>
         <td>
