@@ -8,6 +8,9 @@ import {withRouter} from 'react-router-dom';
 import RouterHandler from 'router/router-handler';
 import CategoriesRoutes from 'router/routes/categories-routes';
 
+/* models */
+import Category from 'models/category';
+
 /* utils */
 import Form from 'utils/form/form';
 import Logger from 'utils/logger/logger';
@@ -32,21 +35,26 @@ class CreateCategoryForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      parent_id: '',
+      category: new Category(),
       image: [],
       categories: [],
       createdCategoryId: null,
+      /* TODO: 
+        add helper methods to show/hide
+        modals instead of updating the state manually
+      */
+      showCreatedModal: false,
       showCreatingModal: false,
       form: new Form({
         name: '',
-        parent_id: null,
+        parentCategory: null,
       }),
-      showCreatedModal: false,
     };
     this.fetchAllCategories = this.fetchAllCategories.bind(this);
     this.saveImage = this.saveImage.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleParentCategoryChange
+      = this.handleParentCategoryChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onCancelButtonClicked = this.onCancelButtonClicked.bind(this);
     this.sendForm = this.sendForm.bind(this);
@@ -93,12 +101,27 @@ class CreateCategoryForm extends Component {
    * handle the changes in the form fields
    * @param {*} event
    */
-  handleInputChange(event) {
+  handleNameChange(event) {
     const target = event.target;
-    const name = target.name;
-    let value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.value;
+    const category = this.state.category;
+    category.name = name;
     this.setState({
-      [name]: value,
+      category: category,
+    });
+  }
+
+  /**
+   * handle the changes in the form fields
+   * @param {*} event
+   */
+  handleParentCategoryChange(event) {
+    const target = event.target;
+    const parentCategoryId = target.value;
+    const category = this.state.category;
+    category.parentCategory.id = parentCategoryId;
+    this.setState({
+      category: category,
     });
   }
 
@@ -109,12 +132,14 @@ class CreateCategoryForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
     let form = new Form({
-      name: this.state.name,
-      parent_id: this.state.parent_id,
+      name: this.state.category.name,
+      parentCategory: this.state.category.parentCategory.id,
     });
     form.appendFiles('image', this.state.image);
+
     this.setState((prevState) => ({
       form: form,
+      // TODO: call the showCreatingModal() here
       showCreatingModal: true,
     }), this.sendForm);
   }
@@ -254,7 +279,7 @@ class CreateCategoryForm extends Component {
                 name="name"
                 type="text"
                 placeholder="name"
-                onChange={this.handleInputChange}
+                onChange={this.handleNameChange}
               />
             </div>
 
@@ -267,8 +292,9 @@ class CreateCategoryForm extends Component {
             <div className="control">
               <div className="select">
                 <select
-                  name="parent_id" onChange={this.handleInputChange}
-                  value={this.state.parent_id}
+                  name="parentCategory"
+                  onChange={this.handleParentCategoryChange}
+                  value={this.state.category.parentCategory.id || ''}
                 >
                   {/* default option */}
                   <option value=''>Main Menu</option>
