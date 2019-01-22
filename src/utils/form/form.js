@@ -1,5 +1,5 @@
 import isArray from 'lodash/isArray';
-
+import isNull from 'lodash/isNull';
 /**
  * this class provides the methods to create a new form object
  * to be sent with an http request an also provides a way
@@ -83,7 +83,15 @@ export default class Form {
     let formData = new FormData();
 
     Object.keys(this.originalData).forEach((key) => {
-      if (typeof this[key] === 'object') {
+      if (isNull(this[key])) {
+        // do nothing
+        /* TODO: this is a hack
+           here we dont set the key because the FormData class
+           serializes null as "null" (String), with the abscence
+           of the key we implicitly set it as null without
+           creating conflicts in the backend
+        */
+      } else if (typeof this[key] === 'object') {
         formData.set(key, JSON.stringify(this[key]));
       } else {
         formData.set(key, this[key]);
