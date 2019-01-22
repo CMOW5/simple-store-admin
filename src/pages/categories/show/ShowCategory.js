@@ -14,6 +14,9 @@ import CategoriesRoutes from 'router/routes/categories-routes';
 /* api */
 import categoriesRequest from 'services/api/categories/categories-request';
 
+/* models */
+import Category from 'models/category';
+
 /* utils */
 // import Logger from 'utils/logger/logger';
 
@@ -36,14 +39,10 @@ class ShowCategory extends Component {
     super(props);
     this.state = {
       id: this.props.match.params.id,
-      category: {
-        image: [],
-      },
+      category: new Category(),
       isFetching: true,
     };
-    this.hiddenFields = [
-      'id', 'image', 'subcategories', 'parent_id',
-    ];
+
     this.getCategory = this.getCategory.bind(this);
     this.goToCategoriesList = this.goToCategoriesList.bind(this);
     this.goToEditCategory = this.goToEditCategory.bind(this);
@@ -95,19 +94,15 @@ class ShowCategory extends Component {
     if (this.state.isFetching) {
       return <Loading show={true} title="category" />;
     } else {
-      const categorySections =
-      Object.keys(category).filter((key) => {
-        return !this.hiddenFields.includes(key);
-      }).map((key, index) => {
-        return (
-          <Section key={index} title={key} text={category[key]} />
-        );
-      });
+      const name = category.name;
+      const parentCategoryName = category.parentCategory.name;
+      const image = [category.image];
 
       return (
         <div>
-          {categorySections}
-          <ImagesSection title="images" images={[category.image]} />
+          <Section title="name" text={name} />
+          <Section title="parent" text={parentCategoryName} />
+          <ImagesSection title="image" images={image} />
         </div>
       );
     }
