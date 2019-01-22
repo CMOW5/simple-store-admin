@@ -45,7 +45,7 @@ export default class HttpRequester {
    * @param {Object} data the data attached to the request
    * @return {Promise}
    */
-  static put(url, data) {
+  static put(url, data={}) {
     return this.submit('put', url, data);
   }
 
@@ -56,7 +56,7 @@ export default class HttpRequester {
    * @param {Object} data the data attached to the request
    * @return {Promise}
    */
-  static patch(url, data) {
+  static patch(url, data={}) {
     return this.submit('patch', url, data);
   }
 
@@ -92,6 +92,12 @@ export default class HttpRequester {
         method: requestType,
         url: url,
         data: data,
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+          // "Authorization": "Bearer " + sessionStorage.getItem('jwt')
+        },
+
         // headers: {Authorization: 'Bearer ' + token},
       })
         .then((response) => {
@@ -112,6 +118,7 @@ export default class HttpRequester {
           Logger.log(this.className() + methodName + 'error = ', error);
           this.onFail(error);
 
+          // TODO: this line is throwing an exception when response is undefined
           const status = error.response.status;
 
           if (status === 401) {
