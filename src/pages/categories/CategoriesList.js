@@ -13,9 +13,6 @@ import categoriesRoutes from 'router/routes/categories-routes';
 import categoriesRequest
   from 'services/api/categories/categories-request';
 
-/* models */
-import Category from 'models/category';
-
 /* utils */
 import Paginator from 'utils/paginator/paginator';
 import Logger from 'utils/logger/logger';
