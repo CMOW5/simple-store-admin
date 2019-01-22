@@ -4,6 +4,11 @@ import categoriesUrls from '../urls/categories-urls';
 /* utils */
 import logger from 'utils/logger/logger';
 
+/* models */
+import Category from 'models/category';
+
+const responseContentKey = 'content';
+
 /**
  * class to make http request related to the categories admin
  */
@@ -25,7 +30,7 @@ export default class CategoriesRequest {
     return new Promise((resolve, reject) => {
       httpRequester.get(url)
         .then((response) => {
-          const count = response.data.content || 0;
+          const count = response.data[responseContentKey] || 0;
           resolve(count);
         })
         .catch((error) => {
@@ -46,7 +51,8 @@ export default class CategoriesRequest {
     return new Promise((resolve, reject) => {
       httpRequester.get(url)
         .then((response) => {
-          const category = response.data.data;
+          const categoryData = response.data[responseContentKey];
+          const category = new Category(categoryData);
           resolve(category);
         })
         .catch((error) => {
@@ -60,7 +66,7 @@ export default class CategoriesRequest {
    *
    * @param {object} queryParams
    * @param {string} optionalUrl
-   * @return {Promise}
+   * @return {Promise} a promise containig an array of Categories
    */
   static fetchAllCategories(queryParams={}, optionalUrl) {
     let url = categoriesUrls.fetchAllCategories(queryParams, optionalUrl);
@@ -68,10 +74,19 @@ export default class CategoriesRequest {
     return new Promise((resolve, reject) => {
       httpRequester.get(url)
         .then((response) => {
-          const categories = response.data.content || [];
+          // TODO: think about what is going to happen when
+          // the response.data.content is not an array (something wrong)
+          // with the api, provide some info about the error
+          const categoriesData = response.data[responseContentKey] || [];
           const paginator = response.data.paginator;
-          const orderedCategories = this.orderByName(categories);
-          resolve({categories: orderedCategories, paginator: paginator});
+
+          const orderedCategories = this._orderByName(categoriesData);
+
+          const categories = orderedCategories.map((categoryData) => {
+            return new Category(categoryData);
+          });
+
+          resolve({categories: categories, paginator: paginator});
         })
         .catch((error) => {
           reject(error);
@@ -82,24 +97,25 @@ export default class CategoriesRequest {
   /**
    * create a new category
    *
-   * @param {Object} data
+   * @param {Object} categoryData
    * @return {Promise} Promise
    */
-  static createCategory(data) {
+  static createCategory(categoryData) {
     const methodName = ' createCategory() ';
     logger.log(this.className() + methodName);
 
     let url = categoriesUrls.create();
 
     return new Promise((resolve, reject) => {
-      httpRequester.post(url, data)
+      httpRequester.post(url, categoryData)
         .then((response) => {
           const methodName = ' then(..) ';
           logger.log(this.className() + methodName + 'data = ', response);
 
-          /* get the updated category data */
-          const category = response.data.data.category;
-          resolve(category);
+          /* get the created category data */
+          const createdCategoryData = response.data[responseContentKey];
+          const createdCategory = new Category(createdCategoryData);
+          resolve(createdCategory);
         })
         .catch((error) => {
           const methodName = ' catch(..) ';
@@ -113,24 +129,25 @@ export default class CategoriesRequest {
    * update the category with the given id
    *
    * @param {Object} id
-   * @param {Object} data
+   * @param {Object} categoryData
    * @return {Promise}
    */
-  static updateCategory(id, data) {
+  static updateCategory(id, categoryData) {
     const methodName = ' updateProduct() ';
     logger.log(this.className() + methodName);
 
     let url = categoriesUrls.update(id);
 
     return new Promise((resolve, reject) => {
-      httpRequester.post(url, data)
+      httpRequester.put(url, categoryData)
         .then((response) => {
           const methodName = ' then(..) ';
           logger.log(this.className() + methodName + 'data = ' + response);
 
           /* get the updated category data */
-          const category = response.data.data.category;
-          resolve(category);
+          const updatedCategoryData = response.data[responseContentKey];
+          const updatedCategory = new Category(updatedCategoryData);
+          resolve(updatedCategory);
         })
         .catch((error) => {
           const methodName = ' catch(..) ';
@@ -156,7 +173,7 @@ export default class CategoriesRequest {
         .then((response) => {
           const methodName = ' then(..) ';
           logger.log(this.className() + methodName + 'data = ' + response);
-          resolve(response.data.data);
+          resolve(response.data);
         })
         .catch((error) => {
           const methodName = ' catch(..) ';
@@ -171,9 +188,9 @@ export default class CategoriesRequest {
    * @param {array} categories
    * @return {array}
    */
-  static orderByName(categories) {
+  static _orderByName(categories = []) {
     let orderedCategories = categories.slice();
-    orderedCategories.sort(this.compareCategories);
+    orderedCategories.sort(this._compareCategories);
     return orderedCategories;
   }
 
@@ -183,7 +200,7 @@ export default class CategoriesRequest {
    * @param {*} cat2
    * @return {number}
    */
-  static compareCategories(cat1, cat2) {
+  static _compareCategories(cat1, cat2) {
     if (cat1.name < cat2.name) {
       return -1;
     }
