@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import isObject from 'lodash/isObject';
 
 /* styles */
 import './single-image-view.css';
@@ -13,10 +14,11 @@ export default class SingleImageView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageSource: '',
+      imageSource: null,
     };
     this.removeFile = this.removeFile.bind(this);
     this.loadImage = this.loadImage.bind(this);
+    this.renderImage = this.renderImage.bind(this);
   }
 
   /**
@@ -39,17 +41,19 @@ export default class SingleImageView extends Component {
    * load the image in the <img> tag
    */
   loadImage() {
-    if (!this.isFile(this.props.file)) {
-      this.setState({
-        imageSource: this.props.file,
-      });
-    } else if (this.isImageSupported(this.props.file.name)) {
+    const file = this.props.file;
+    if (this.isFile(file) && this.isImageSupported(file.name)) {
       this.getImageSource(this.props.file)
         .then((source) => {
           this.setState({
             imageSource: source,
           });
         });
+    } else {
+      const imgSrc = isObject(file) && file.url ? file.url : null;
+      this.setState({
+        imageSource: imgSrc,
+      });
     }
   }
 
@@ -98,7 +102,7 @@ export default class SingleImageView extends Component {
    * @return {boolean}
    */
   isFile = (file) => {
-    return file.constructor === File;
+    return file && (file.constructor === File);
   }
 
   /**
@@ -119,19 +123,31 @@ export default class SingleImageView extends Component {
   }
 
   /**
+   * @return {ReactNode}
+   */
+  renderImage() {
+    if (this.state.imageSource) {
+      return (
+        <div className="image-view-container">
+          <img className="background-image"
+            src={this.state.imageSource}
+            alt="product"
+          />
+          <a className="tag is-delete is-danger" onClick={this.removeFile}> </a>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  /**
    *  @return {ReactNode}
    */
   render() {
-    // jsx
+    const imageView = this.renderImage();
     return (
-      <div className="image-view-container">
-        <img className="background-image"
-          src={this.state.imageSource}
-          alt="product"
-        />
-        <a className="tag is-delete is-danger" onClick={this.removeFile}> </a>
-      </div>
-
+      imageView
     );
   }
 }
