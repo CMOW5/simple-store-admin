@@ -18,6 +18,6 @@ export default class Category {
     this.parentCategory = initialCategoryData.parentCategory || {id: null};
     this.products = initialCategoryData.products || [];
     this.subcategories = initialCategoryData.subcategories || [];
-    this.image = initialCategoryData.image || '';
+    this.image = initialCategoryData.image || null;
   }
 }
