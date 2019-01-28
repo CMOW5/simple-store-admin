@@ -40,7 +40,6 @@ class EditCategoryForm extends Component {
       category: new Category(),
       categories: [],
 
-
       imageIdToDelete: null,
       newImage: [],
 
@@ -167,8 +166,8 @@ class EditCategoryForm extends Component {
    */
   saveImage(newImage, imageIdToDelete) {
     this.setState({
-      newImage: newImage.length > 0 ? newImage[0] : null,
-      imageIdToDelete: imageIdToDelete.length > 0 ? imageIdToDelete[0] : null,
+      newImage: newImage ? newImage[0] : null,
+      imageIdToDelete: imageIdToDelete ? imageIdToDelete[0] : null,
     });
   }
 
@@ -212,11 +211,9 @@ class EditCategoryForm extends Component {
       imageIdToDelete: this.state.imageIdToDelete,
     });
     form.appendFiles('image', this.state.newImage);
-    // form.setPutMethod();
+    this.showEditingModal();
     this.setState({
       form: form,
-      // TODO: refactor this in a function to open the editing modal
-      // showEditingModal: true,
     }, this.sendForm);
   }
 
@@ -226,19 +223,17 @@ class EditCategoryForm extends Component {
   sendForm() {
     const formData = this.state.form.getFormData();
     const id = this.state.id;
-    return;
     categoriesRequest.updateCategory(id, formData)
       .then((category) => {
         Logger.log('category updated = ', category);
-        return;
         this.closeEditingModal();
         this.showEditedModal();
       })
       .catch((error) => {
         Logger.log('error = ', error);
-        return;
         const form = this.state.form;
-        form.saveErrors(error);
+        // TODO: add the errors
+        // form.saveErrors(error);
         this.saveFormToState(form);
         this.closeEditingModal();
       });
@@ -444,7 +439,7 @@ class EditCategoryForm extends Component {
           <label className="label">Images</label>
           <div className="control">
             <ImageEditor
-              initImages={[this.state.category.image]}
+              initImages={this.state.category.image}
               onImagesLoaded={this.saveImage}
               singleImage={true}
             />
