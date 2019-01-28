@@ -43,7 +43,7 @@ export default class SingleCategoryRow extends Component {
     // TODO: render something instead of null when the parent category is null
     const parentCategoryName = this.props.category.parentCategory.name;
     const imageUrl
-      = this.props.category.image.url ? this.props.category.image.url : '';
+      = this.props.category.image ? this.props.category.image.url : '';
 
     return (
 
