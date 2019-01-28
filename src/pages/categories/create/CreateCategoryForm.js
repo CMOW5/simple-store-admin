@@ -17,7 +17,7 @@ import Logger from 'utils/logger/logger';
 
 /* components */
 import CreateHeader from 'pages/utils/list_headers/CreateHeader';
-import ImagePicker from 'components/images/image_picker/ImagePicker';
+import ImageEditor from 'components/images/image_editor/ImageEditor';
 import SimpleNotification
   from 'components/modals/simple_notification/SimpleNotification';
 import LoadingModal from 'components/modals/loading/LoadingModal';
@@ -93,7 +93,7 @@ class CreateCategoryForm extends Component {
    */
   saveImage(newImage) {
     this.setState({
-      image: newImage.length > 0 ? newImage[0] : null,
+      image: newImage ? newImage[0] : null,
     });
   }
 
@@ -311,7 +311,7 @@ class CreateCategoryForm extends Component {
             className="field">
             <label className="label">Image</label>
             <div className="control">
-              <ImagePicker singleImage={true} onImagesLoaded={this.saveImage}/>
+              <ImageEditor singleImage={true} onImagesLoaded={this.saveImage}/>
             </div>
           </div>
 
