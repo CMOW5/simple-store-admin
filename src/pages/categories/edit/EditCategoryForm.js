@@ -176,8 +176,7 @@ class EditCategoryForm extends Component {
    * @param {*} event
    */
   handleNameChange(event) {
-    const target = event.target;
-    const newName = target.value;
+    const newName = event.target.value;
     let category = this.state.category;
     category.name = newName;
     this.setState({
@@ -190,8 +189,7 @@ class EditCategoryForm extends Component {
    * @param {*} event
    */
   handleParentCategoryChange(event) {
-    const target = event.target;
-    let newParentCategory = target.value;
+    let newParentCategory = event.target.value;
     let category = this.state.category;
     category.parentCategory.id = newParentCategory;
     this.setState({
@@ -232,8 +230,7 @@ class EditCategoryForm extends Component {
       .catch((error) => {
         Logger.log('error = ', error);
         const form = this.state.form;
-        // TODO: add the errors
-        // form.saveErrors(error);
+        form.saveErrors(error);
         this.saveFormToState(form);
         this.closeEditingModal();
       });
