@@ -14,7 +14,9 @@ export default class Form {
   constructor(data) {
     this.originalData = data;
     this.files = {};
-    this.errors = new Errors();
+
+    /** @private */
+    this.errors_ = new Errors();
     /**
      * @private {String} the formData method
      * (only to sent PUT and PATCH requests)
@@ -143,7 +145,7 @@ export default class Form {
    * @param {Error} error
    */
   saveErrors(error) {
-    this.errors.record(error.response.data.errors);
+    this.errors_.record(error.response.data.errors);
   }
 
   /**
@@ -153,7 +155,7 @@ export default class Form {
    * @return {boolean}
    */
   hasError(errorName) {
-    return this.errors.has(errorName);
+    return this.errors_.has(errorName);
   }
 
   /**
@@ -163,7 +165,7 @@ export default class Form {
    * @return {string} the error message
    */
   getErrorMessage(errorName) {
-    return this.errors.get(errorName);
+    return this.errors_.get(errorName);
   }
 
   /**
@@ -171,7 +173,7 @@ export default class Form {
    *
    */
   clearErrors() {
-    this.errors.clear();
+    this.errors_.clear();
   }
 
   /**
@@ -197,7 +199,7 @@ class Errors {
    * Create a new Errors instance.
    */
   constructor() {
-    this.errors = {};
+    this.errors = [];
   }
 
   /**
@@ -207,7 +209,8 @@ class Errors {
    * @return {boolean}
    */
   has(field) {
-    return this.errors.hasOwnProperty(field);
+    const error = this.getError(field);
+    return Boolean(error);
   }
 
   /**
@@ -215,7 +218,7 @@ class Errors {
    * @return {boolean}
    */
   any() {
-    return Object.keys(this.errors).length > 0;
+    return this.errors.length > 0;
   }
 
   /**
@@ -225,9 +228,20 @@ class Errors {
    * @return {string} the error message
    */
   get(field) {
-    if (this.errors[field]) {
-      return this.errors[field][0];
-    }
+    const error = this.getError(field);
+    return error ? error.defaultMessage : '';
+  }
+
+  /**
+   * the error object for a field.
+   *
+   * @param {string} field
+   * @return {object} the error message
+   */
+  getError(field) {
+    return this.errors.find(function(error) {
+      return error.field === field;
+    });
   }
 
   /**
@@ -236,21 +250,17 @@ class Errors {
    * @param {object} errors
    */
   record(errors) {
-    if (errors) {
+    if (isArray(errors)) {
       this.errors = errors;
     }
   }
 
   /**
-   * Clear one or all error fields.
+   * Clear one or all errors.
    *
    * @param {string|null} field
    */
-  clear(field) {
-    if (field) {
-      delete this.errors[field];
-      return;
-    }
-    this.errors = {};
+  clear() {
+    this.errors = [];
   }
 }
