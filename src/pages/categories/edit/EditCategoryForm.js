@@ -41,7 +41,7 @@ class EditCategoryForm extends Component {
       categories: [],
 
       imageIdToDelete: null,
-      newImage: [],
+      newImage: null,
 
       showEditedModal: false,
       showEditingModal: false,
@@ -208,7 +208,7 @@ class EditCategoryForm extends Component {
       parentCategory: this.state.category.parentCategory.id,
       imageIdToDelete: this.state.imageIdToDelete,
     });
-    form.appendFiles('image', this.state.newImage);
+    form.appendFiles('newImage', this.state.newImage);
     this.showEditingModal();
     this.setState({
       form: form,
