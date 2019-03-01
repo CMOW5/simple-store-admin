@@ -39,7 +39,7 @@ class CreateCategoryForm extends Component {
       image: [],
       categories: [],
       createdCategoryId: null,
-      /* TODO: 
+      /* TODO:
         add helper methods to show/hide
         modals instead of updating the state manually
       */
