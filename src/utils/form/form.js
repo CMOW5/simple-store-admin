@@ -1,5 +1,6 @@
 import isArray from 'lodash/isArray';
 import isNull from 'lodash/isNull';
+import isObject from 'lodash/isObject';
 /**
  * this class provides the methods to create a new form object
  * to be sent with an http request an also provides a way
@@ -16,12 +17,12 @@ export default class Form {
     this.files = {};
 
     /** @private */
-    this.errors_ = new Errors();
+    this._errors = new Errors();
     /**
      * @private {String} the formData method
      * (only to sent PUT and PATCH requests)
      */
-    this.method_ = '';
+    this._method = '';
 
     /* create the form attributes */
     Object.keys(data).forEach((key) => {
@@ -43,14 +44,14 @@ export default class Form {
    * set the form's method to put
    */
   setPutMethod() {
-    this.method_ = 'put';
+    this._method = 'put';
   }
 
   /**
    * set the form's method to patch
    */
   setPatchMethod() {
-    this.method_ = 'patch';
+    this._method = 'patch';
   }
 
   /**
@@ -59,6 +60,69 @@ export default class Form {
   hasFiles() {
     return Object.keys(this.files).length !== 0 &&
       this.files.constructor === Object;
+  }
+
+  /**
+   * get all relevant data from the form as a json object.
+   * @return {Object}
+   */
+  getDataAsJson() {
+    let data = {};
+
+    Object.keys(this.originalData).forEach((key) => {
+      data[key] = this[key];
+    });
+
+    // TODO: append the files
+    return data;
+  }
+
+  /**
+   * return a formData object containing the relevant data
+   * for the form
+   * @return {FormData}
+   */
+  getDataAsFormData() {
+    let formData = new FormData();
+
+    Object.keys(this.originalData).forEach((key) => {
+      if (isNull(this[key])) {
+        // do not append the null data
+      } else if (isArray(this[key])) {
+        this[key].forEach((value) => {
+          formData.append(key, value);
+        });
+      } else if (isObject(this[key])) {
+        formData.set(key, JSON.stringify(this[key]));
+      } else {
+        formData.set(key, this[key]);
+      }
+    });
+
+    /* append the files to the form data */
+    if (this.hasFiles()) {
+      Object.keys(this.files)
+        .forEach((fileKey) => {
+          if (!isArray(this.files[fileKey])) {
+            formData.append(`${fileKey}`, this.files[fileKey]);
+          } else {
+            this.files[fileKey]
+              .forEach((file, index) => {
+                formData.append(`${fileKey}[${index}]`, file);
+              });
+          }
+        });
+    }
+
+    /**
+     * add the method attribute to the form data to sent a
+     * put or a patch request via POST.
+     */
+    if (this._method !== '') {
+      formData.set('_method', this._method);
+    }
+
+    return formData;
   }
 
   /**
@@ -80,6 +144,7 @@ export default class Form {
    * return a formData object containing the relevant data
    * for the form
    * @return {FormData}
+   * @deprecated
    */
   getFormData() {
     let formData = new FormData();
@@ -119,13 +184,12 @@ export default class Form {
      * add the method attribute to the form data to sent a
      * put or a patch request via POST.
      */
-    if (this.method_ !== '') {
-      formData.set('_method', this.method_);
+    if (this._method !== '') {
+      formData.set('_method', this._method);
     }
 
     return formData;
   }
-
 
   /**
    * Reset the form fields.
@@ -134,7 +198,7 @@ export default class Form {
     Object.keys(this.originalData).forEach((key) => {
       this[key] = '';
     });
-    this.method_ = '';
+    this._method = '';
     this.files = {};
     this.clearErrors();
   }
@@ -145,7 +209,7 @@ export default class Form {
    * @param {Error} error
    */
   saveErrors(error) {
-    this.errors_.record(error.response.data.errors);
+    this._errors.record(error.response.data.errors);
   }
 
   /**
@@ -155,7 +219,7 @@ export default class Form {
    * @return {boolean}
    */
   hasError(errorName) {
-    return this.errors_.has(errorName);
+    return this._errors.has(errorName);
   }
 
   /**
@@ -165,7 +229,7 @@ export default class Form {
    * @return {string} the error message
    */
   getErrorMessage(errorName) {
-    return this.errors_.get(errorName);
+    return this._errors.get(errorName);
   }
 
   /**
@@ -173,7 +237,7 @@ export default class Form {
    *
    */
   clearErrors() {
-    this.errors_.clear();
+    this._errors.clear();
   }
 
   /**
