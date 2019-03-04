@@ -37,10 +37,10 @@ class CreateProductForm extends Component {
       name: '',
       description: '',
       price: '',
-      price_sale: '',
-      in_sale: false,
+      priceSale: '',
+      inSale: false,
       active: true,
-      category_id: '',
+      category: '',
       weight: 0,
       units: 1,
       images: [],
@@ -51,10 +51,10 @@ class CreateProductForm extends Component {
         name: '',
         description: '',
         price: '',
-        price_sale: '',
-        in_sale: false,
+        priceSale: '',
+        inSale: false,
         active: true,
-        category_id: '',
+        category: '',
         weight: 0,
         units: 1,
       }),
@@ -130,10 +130,10 @@ class CreateProductForm extends Component {
       name: this.state.name,
       description: this.state.description,
       price: this.state.price,
-      price_sale: this.state.price_sale,
-      in_sale: this.state.in_sale,
+      priceSale: this.state.priceSale,
+      inSale: this.state.inSale,
       active: this.state.active,
-      category_id: this.state.category_id,
+      category: this.state.category,
       weight: this.state.weight,
       units: this.state.units,
     });
@@ -326,15 +326,15 @@ class CreateProductForm extends Component {
             <label className="label">Price Sale</label>
             <div className="control">
               <input
-                className={this.inputClass('price_sale')}
-                name="price_sale"
+                className={this.inputClass('priceSale')}
+                name="priceSale"
                 type="text"
                 placeholder="Text input"
                 onChange={this.handleInputChange}
               />
             </div>
 
-            {this.renderError('price_sale')}
+            {this.renderError('priceSale')}
 
           </div>
 
@@ -342,8 +342,8 @@ class CreateProductForm extends Component {
             <label className="checkbox">
               <input
                 type="checkbox"
-                name="in_sale"
-                checked={this.state.in_sale}
+                name="inSale"
+                checked={this.state.inSale}
                 onChange={this.handleInputChange}
               />
               &nbsp;&nbsp; In Sale?
@@ -355,8 +355,8 @@ class CreateProductForm extends Component {
             <div className="control">
               <div className="select">
                 <select
-                  name="category_id" onChange={this.handleInputChange}
-                  value={this.state.category_id}
+                  name="category" onChange={this.handleInputChange}
+                  value={this.state.category || ''}
                 >
                   {/* default option */}
                   <option disabled value=''> -- select an option -- </option>
@@ -365,7 +365,7 @@ class CreateProductForm extends Component {
               </div>
             </div>
 
-            {this.renderError('category_id')}
+            {this.renderError('category')}
 
           </div>
 
