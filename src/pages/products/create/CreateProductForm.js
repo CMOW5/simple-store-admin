@@ -149,7 +149,7 @@ class CreateProductForm extends Component {
    */
   sendForm() {
     // Logger.log('form = ', this.state.form);
-    const formData = this.state.form.getFormData();
+    const formData = this.state.form.getDataAsFormData();
     Logger.log('form data = ', this.state.form.toString());
     ProductsRequest.createProduct(formData)
       .then((product) => {
