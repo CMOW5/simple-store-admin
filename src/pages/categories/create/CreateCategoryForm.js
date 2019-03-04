@@ -148,7 +148,7 @@ class CreateCategoryForm extends Component {
    * send the form to the api
    */
   sendForm() {
-    const formData = this.state.form.getFormData();
+    const formData = this.state.form.getDataAsFormData();
     Logger.log(this.state.form.toString());
     CategoriesRequest.createCategory(formData)
       .then((category) => {

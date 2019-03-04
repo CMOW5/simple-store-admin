@@ -219,7 +219,7 @@ class EditCategoryForm extends Component {
    * send the form to the api
    */
   sendForm() {
-    const formData = this.state.form.getFormData();
+    const formData = this.state.form.getDataAsFormData();
     const id = this.state.id;
     categoriesRequest.updateCategory(id, formData)
       .then((category) => {
