@@ -102,7 +102,7 @@ export default class ProductsRequest {
           Logger.log(this.className() + methodName + 'data = ' + response);
 
           /* get the created product data */
-          const productData = response.data.data.product;
+          const productData = response.data[responseContentKey];
           resolve(productData);
         })
         .catch((error) => {
@@ -132,7 +132,7 @@ export default class ProductsRequest {
           Logger.log(this.className() + methodName + 'data = ' + response);
 
           /* get the updated product data */
-          const productData = response.data.data.product;
+          const productData = response.data[responseContentKey];
           resolve(productData);
         })
         .catch((error) => {
@@ -159,7 +159,7 @@ export default class ProductsRequest {
         .then((response) => {
           const methodName = ' then(..) ';
           Logger.log(this.className() + methodName + 'data = ' + response);
-          resolve(response.data.data);
+          resolve(response.data[responseContentKey]);
         })
         .catch((error) => {
           const methodName = ' catch(..) ';
