@@ -12,6 +12,7 @@ import './App.css';
 /* components */
 import SignInPage from 'pages/signin/SignInPage';
 import Main from 'pages/main/Main';
+import TestPage from 'pages/test/TestPage';
 // import requireAuth from 'components/auth/RequireAuth';
 
 // import TestComponent from 'components/test/TestComponent';
@@ -52,8 +53,10 @@ class App extends Component {
         <Switch>
           {/* <Route exact path='/test' component={TestComponent}/> */}
           <Route exact path='/signin' component={SignInPage}/>
+          <Route exact path='/test' component={(TestPage)}/>
           {/* <Route path='/' component={requireAuth(Main)}/> */}
           <Route path='/' component={(Main)}/>
+
         </Switch>
       </div>
     );
