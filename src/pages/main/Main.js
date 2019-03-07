@@ -21,7 +21,7 @@ import SideNav from 'components/navs/side_nav/SideNav';
 import DashBoard from 'pages/dashboard/DashBoard';
 
 // products
-import ProductsList from 'pages/products/ProductsList';
+import ProductsTable from 'pages/products/ProductsTable';
 import ShowProduct from 'pages/products/show/ShowProduct';
 import CreateProductForm from 'pages/products/create/CreateProductForm';
 import EditProductForm from 'pages/products/edit/EditProductForm';
@@ -111,7 +111,7 @@ export default class Main extends Component {
 
               {/* products */}
               <Route exact path = {productsListRoute}
-                component = {ProductsList} />
+                component = {ProductsTable} />
               <Route exact path ={productsCreateRoute}
                 component = {CreateProductForm} />
               <Route exact path ={productsShowRoute}
