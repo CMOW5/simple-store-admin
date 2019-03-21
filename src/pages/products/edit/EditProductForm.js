@@ -169,7 +169,6 @@ class EditProductForm extends Component {
       imagesIdsToDelete: this.state.imagesIdsToDelete,
     });
     form.appendFiles('newImages', this.state.newImages);
-    form.setPutMethod();
     this.setState((prevState) => ({
       form: form,
       showEditingModal: true,
