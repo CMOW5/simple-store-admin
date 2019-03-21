@@ -126,7 +126,7 @@ export default class ProductsRequest {
     let url = ProductsUrls.update(id);
 
     return new Promise((resolve, reject) => {
-      HttpRequester.post(url, data)
+      HttpRequester.put(url, data)
         .then((response) => {
           const methodName = ' then(..) ';
           Logger.log(this.className() + methodName + 'data = ' + response);
