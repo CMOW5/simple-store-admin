@@ -42,7 +42,7 @@ class CreateProductForm extends Component {
       active: true,
       category: '',
       weight: 0,
-      units: 1,
+      stock: 1,
       images: [],
       categories: [],
       isFetching: true,
@@ -56,7 +56,7 @@ class CreateProductForm extends Component {
         active: true,
         category: '',
         weight: 0,
-        units: 1,
+        stock: 1,
       }),
       showCreatedModal: false,
     };
@@ -135,7 +135,7 @@ class CreateProductForm extends Component {
       active: this.state.active,
       category: this.state.category,
       weight: this.state.weight,
-      units: this.state.units,
+      stock: this.state.stock,
     });
     form.appendFiles('images', this.state.images);
     this.setState({
@@ -386,18 +386,18 @@ class CreateProductForm extends Component {
           </div>
 
           <div className="field">
-            <label className="label">Units</label>
+            <label className="label">Stock</label>
             <div className="control">
               <input
-                className={this.inputClass('units')}
-                name="units"
+                className={this.inputClass('stock')}
+                name="stock"
                 type="text"
                 placeholder="Text input"
                 onChange={this.handleInputChange}
               />
             </div>
 
-            {this.renderError('units')}
+            {this.renderError('stock')}
 
           </div>
 

@@ -43,7 +43,7 @@ class EditProductForm extends Component {
       active: false,
       category: '',
       weight: 0,
-      units: 0,
+      stock: 0,
       // refactor to currentProductImages
       images: [],
       imagesIdsToDelete: [],
@@ -62,7 +62,7 @@ class EditProductForm extends Component {
         active: false,
         category: '',
         weight: 0,
-        units: 1,
+        stock: 1,
       }),
     };
     this.fetchAllCategories = this.fetchAllCategories.bind(this);
@@ -165,7 +165,7 @@ class EditProductForm extends Component {
       active: this.state.active,
       category: this.state.category,
       weight: this.state.weight,
-      units: this.state.units,
+      stock: this.state.stock,
       imagesIdsToDelete: this.state.imagesIdsToDelete,
     });
     form.appendFiles('newImages', this.state.newImages);
@@ -370,19 +370,19 @@ class EditProductForm extends Component {
           </div>
 
           <div className="field">
-            <label className="label">Units</label>
+            <label className="label">Stock</label>
             <div className="control">
               <input
-                className={this.inputClass('units')}
-                name="units"
-                value={this.state.units || ''}
+                className={this.inputClass('stock')}
+                name="stock"
+                value={this.state.stock || ''}
                 type="text"
                 placeholder="Text input"
                 onChange={this.handleInputChange}
               />
             </div>
 
-            {this.renderError('units')}
+            {this.renderError('stock')}
 
           </div>
 
