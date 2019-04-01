@@ -39,7 +39,6 @@ class ProductsTable extends Component {
       searchKeyword: '',
       isFetching: true,
     };
-    this.componentName = 'ProductsTable';
     this.fetchProducts = this.fetchProducts.bind(this);
     this.renderMainTable = this.renderMainTable.bind(this);
 
