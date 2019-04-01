@@ -23,7 +23,7 @@ class CategoriesCard extends Component {
     super(props);
     this.state = {
       count: 0,
-      tag: 'category',
+      tag: 'categories',
       isFetching: true,
     };
     this.getCount = this.getCount.bind(this);

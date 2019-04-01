@@ -40,43 +40,20 @@ export default class SingleCard extends Component {
     const text =
       `you have ${count} ${this.props.tag} `;
 
-    const buttonText = `view all ${this.props.tag}`;
-
-
-    const sectionStyle = {
-      'width': '100%',
-      'height': '20rem',
-      'backgroundImage':
-        `linear-gradient(
-          rgba(0, 0, 0, 0.5),
-          rgba(0, 0, 0, 0.5)
-        ),
-        url(${backgroundImage})`,
-      'color': 'rgb(228,225,225)',
-    };
+    const buttonText = `manage ${this.props.tag}`;
 
     return (
-      <section style = {sectionStyle}>
-
-        <div className="icon-container">
-          <i className={icon}></i>
-        </div>
-
-        <div className="card-title">
-          <p>{title}</p>
-        </div>
-
-        <div className="card-text">
-          <p>{text}</p>
-        </div>
-
-        <footer>
-          <a className="button is-link" onClick={this.onButtonClicked}>
+      <div className="tile is-parent">
+        <article className="tile is-child box">
+          <p className="title">{count}</p>
+          <p className="subtitle">{tag}</p>
+          <button
+            className="button is-link"
+            onClick={this.onButtonClicked}>
             {buttonText}
-          </a>
-        </footer>
-
-      </section>
+          </button>
+        </article>
+      </div>
     );
   }
 }

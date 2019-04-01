@@ -18,7 +18,7 @@ export default class UsersCard extends Component {
     super(props);
     this.state = {
       count: 0,
-      tag: 'user',
+      tag: 'users',
       isFetching: true,
     };
     this.getCount = this.getCount.bind(this);
@@ -49,7 +49,7 @@ export default class UsersCard extends Component {
    */
   render() {
     return (
-      this.state.isFetching ? <Loading show={true} title="users" /> :
+      this.state.isFetching ? <Loading show={true} title= {this.state.tag} /> :
         <SingleCard
           icon = 'fa fa-users fa-5x'
           tag = {this.state.tag}

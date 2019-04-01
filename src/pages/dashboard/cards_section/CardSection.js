@@ -25,17 +25,13 @@ export default class CardSection extends Component {
    */
   render() {
     return (
-      <div className="columns is-desktop">
-        <div className="column">
+      <section className="info-tiles">
+        <div className="tile is-ancestor has-text-centered">
           <ProductsCard />
-        </div>
-        <div className="column">
           <CategoriesCard />
-        </div>
-        <div className="column">
           <UsersCard />
         </div>
-      </div>
+      </section>
     );
   }
 }

@@ -27,7 +27,7 @@ class ProductsCard extends Component {
     super(props);
     this.state = {
       count: 0,
-      tag: 'product',
+      tag: 'products',
       isFetching: true,
     };
     this.getCount = this.getCount.bind(this);
