@@ -8,9 +8,7 @@ import './table-body.css';
 
 import cloneDeep from 'lodash/cloneDeep';
 
-/**
- *
- */
+/** */
 export default class TableBody extends Component {
   /**
    * @param {object} props
@@ -46,7 +44,9 @@ export default class TableBody extends Component {
 
     const rowsNodes = rows.map((row) => {
       const columnsNodes = columns.map((column) => {
-        return (<Td key={column.name}>{row[column.name]}</Td>);
+        return (
+          <Td key={column.name}>{this.getValueFromData(row, column)}</Td>
+        );
       });
       return (<Tr key={row.id}>{columnsNodes}</Tr>);
     });
@@ -110,6 +110,33 @@ export default class TableBody extends Component {
       });
 
     return actionButtons;
+  }
+
+  /**
+   * this function deserializes an string representation
+   * to an object
+   *
+   * example: given the row =>
+   * row: {
+   *  parentCategory: {
+   *    name: 'some name'
+   *  }
+   * }
+   *
+   * and the column name => parentCategory.name
+   * the function returns the value of the object
+   * row.parentCategory.name
+   *
+   * @param {object} row
+   * @param {object} column
+   * @return {objct}
+   */
+  getValueFromData = (row, column) => {
+    const data = column.name;
+    return data.split('.').reduce((o, i) => {
+      if (o) return o[i];
+      else return undefined;
+    }, row);
   }
 
   /**
