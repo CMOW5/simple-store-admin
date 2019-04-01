@@ -119,12 +119,12 @@ export default class HttpRequester {
           this.onFail(error);
 
           // TODO: this line is throwing an exception when response is undefined
-          const status = error.response.status;
+          // const status = error.response.status;
 
-          if (status === 401) {
+          /* if (status === 401) {
             // EventProvider.fire("unauthorized");
           }
-
+ */
           reject(error);
         });
     });
