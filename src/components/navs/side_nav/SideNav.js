@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import './side-nav.css';
+
 /* redux */
 import {connect} from 'react-redux';
 import {goToRoute} from 'store/actions/router-actions';
@@ -13,49 +15,28 @@ import CategoriesRoutes from 'router/routes/categories-routes';
 import SettingsRoutes from 'router/routes/settings-routes';
 
 
-/* styles */
-import './side-nav.css';
-
-/**
- * main navbar component
- * TODO: improve the side nav show/hide behavior
- */
+/** */
 class SideNav extends Component {
   /**
+   *
    * @param {*} props
    */
   constructor(props) {
     super(props);
     this.state = {
+      selectedItem: '',
     };
-    /* create a sidenav ref to attach new styles in order
-      to hide/show the sidenav */
-    this.sideNavRef = React.createRef();
-    /* methods bindings */
     this.goToDahsBoard = this.goToDahsBoard.bind(this);
     this.goToProducts = this.goToProducts.bind(this);
     this.goToCategories = this.goToCategories.bind(this);
     this.goToSettings = this.goToSettings.bind(this);
-    this.toggleNav = this.toggleNav.bind(this);
-    this.closeNav = this.closeNav.bind(this);
-  }
-
-  /**
-   * Anything that doesn't affect the state can be put in componentDidUpdate
-   *
-   * @param {object} prevProps
-   * @param {object} prevState
-   */
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.openSideNav !== this.props.openSideNav) {
-      this.toggleNav();
-    }
   }
 
   /**
    * go to the dashboard route
    */
   goToDahsBoard() {
+    this.setState({selectedItem: 'dashboard'});
     const route = BaseRoutes.base();
     RouterHandler.goTo(this.props.history, route);
   }
@@ -64,6 +45,7 @@ class SideNav extends Component {
    * go to the products list
    */
   goToProducts() {
+    this.setState({selectedItem: 'products'});
     const route = ProductRoutes.base();
     RouterHandler.goTo(this.props.history, route);
   }
@@ -72,6 +54,7 @@ class SideNav extends Component {
    * go to the products list
    */
   goToCategories() {
+    this.setState({selectedItem: 'categories'});
     const route = CategoriesRoutes.base();
     RouterHandler.goTo(this.props.history, route);
   }
@@ -84,22 +67,8 @@ class SideNav extends Component {
     RouterHandler.goTo(this.props.history, route);
   }
 
-  /**
-   * toggle the side nav visibility
-   */
-  toggleNav() {
-    if (this.sideNavRef.current.style.display === 'block') {
-      this.sideNavRef.current.style.display = 'none';
-    } else {
-      this.sideNavRef.current.style.display = 'block';
-    }
-  }
-
-  /**
-   * close the side nav
-   */
-  closeNav() {
-    this.sideNavRef.current.style.display = 'none';
+  setMenuActive = (itemName) => {
+    return (this.state.selectedItem === itemName ? 'is-active' : '');
   }
 
   /**
@@ -107,49 +76,57 @@ class SideNav extends Component {
    */
   render() {
     return (
-      <aside className="sidenav" ref={this.sideNavRef}>
-
-        <a className="closebtn" onClick = {this.closeNav}>
-          &times;
-        </a>
-
-        <a className="nav-item">
-          <i className="fa fa-adn"></i>
-        </a>
-
-        <a
-          onClick = {this.goToDahsBoard}
-          className="nav-item">
-          <i className="fa fa-clipboard">
-            <span>Dashboard</span>
-          </i>
-        </a>
-        <a
-          onClick = {this.goToProducts}
-          className="nav-item">
-          <i className="fa fa-shopping-bag">
-            <span>Products</span>
-          </i>
-        </a>
-        <a
-          onClick = {this.goToCategories}
-          className="nav-item">
-          <i className="fa fa-sitemap">
-            <span>Categories</span>
-          </i>
-        </a>
-        <a className="nav-item">
-          <i className="fa fa-users">
-            <span>Users</span>
-          </i>
-        </a>
-        <a
-          onClick = {this.goToSettings}
-          className="nav-item">
-          <i className="fa fa-cog">
-            <span>Settings</span>
-          </i>
-        </a>
+      <aside className="menu is-hidden-mobile">
+        <p className="menu-label">
+          General
+        </p>
+        <ul className="menu-list">
+          <li onClick = {this.goToDahsBoard}>
+            <a className = {this.setMenuActive('dashboard')}>
+              Dashboard
+            </a>
+          </li>
+          <li onClick = {this.goToProducts}>
+            <a className = {this.setMenuActive('products')}>
+              Products
+            </a>
+          </li>
+          <li onClick = {this.goToCategories}>
+            <a className = {this.setMenuActive('categories')}>
+              Categories
+            </a>
+          </li>
+          <li>
+            <a>
+              Users
+            </a>
+          </li>
+        </ul>
+        <p className="menu-label">
+          Administration
+        </p>
+        <ul className="menu-list">
+          <li><a>Team Settings</a></li>
+          <li>
+            <a>Manage Your Team</a>
+            <ul>
+              <li><a>Members</a></li>
+              <li><a>Plugins</a></li>
+              <li><a>Add a member</a></li>
+            </ul>
+          </li>
+          <li><a>Invitations</a></li>
+          <li><a>Cloud Storage Environment Settings</a></li>
+          <li><a>Authentication</a></li>
+        </ul>
+        <p className="menu-label">
+                Transactions
+        </p>
+        <ul className="menu-list">
+          <li><a>Payments</a></li>
+          <li><a>Transfers</a></li>
+          <li><a>Balance</a></li>
+        </ul>
       </aside>
     );
   }
@@ -173,3 +150,14 @@ const mapDispatchToProps = (dispatch) => {
 
 export default
 withRouter(connect(mapStateToProps, mapDispatchToProps)(SideNav));
+
+// The following code is based off a toggle menu by @Bradcomp
+// source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1
+/* (function() {
+  var burger = document.querySelector('.burger');
+  var menu = document.querySelector('#'+burger.dataset.target);
+  burger.addEventListener('click', function() {
+      burger.classList.toggle('is-active');
+      menu.classList.toggle('is-active');
+  });
+})(); */

@@ -9,12 +9,16 @@ import {withRouter} from 'react-router-dom';
 import RouterHandler from 'router/router-handler';
 import BaseRoutes from 'router/routes/base-routes';
 import ProductRoutes from 'router/routes/products-routes';
+import CategoriesRoutes from 'router/routes/categories-routes';
+import SettingsRoutes from 'router/routes/settings-routes';
+
 
 /* styles */
 import './side-nav.css';
 
 /**
  * main navbar component
+ * TODO: improve the side nav show/hide behavior
  */
 class SideNav extends Component {
   /**
@@ -24,20 +28,25 @@ class SideNav extends Component {
     super(props);
     this.state = {
     };
-    this.goToProducts = this.goToProducts.bind(this);
-    this.goToDahsBoard = this.goToDahsBoard.bind(this);
+    /* create a sidenav ref to attach new styles in order
+      to hide/show the sidenav */
     this.sideNavRef = React.createRef();
+    /* methods bindings */
+    this.goToDahsBoard = this.goToDahsBoard.bind(this);
+    this.goToProducts = this.goToProducts.bind(this);
+    this.goToCategories = this.goToCategories.bind(this);
+    this.goToSettings = this.goToSettings.bind(this);
+    this.toggleNav = this.toggleNav.bind(this);
+    this.closeNav = this.closeNav.bind(this);
   }
 
   /**
-     * Anything that doesn't affect the state can be put in componentDidUpdate
-     *
-     * @param {*} prevProps
-     * @param {*} prevState
-     * @param {*} snapshot
-     */
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log(prevProps, this.props);
+   * Anything that doesn't affect the state can be put in componentDidUpdate
+   *
+   * @param {object} prevProps
+   * @param {object} prevState
+   */
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.openSideNav !== this.props.openSideNav) {
       this.toggleNav();
     }
@@ -60,11 +69,25 @@ class SideNav extends Component {
   }
 
   /**
-   *
+   * go to the products list
    */
-  toggleNav = () => {
-    console.log('toggle nav');
-    console.log(this.sideNavRef.current.style.display);
+  goToCategories() {
+    const route = CategoriesRoutes.base();
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /**
+   * go to the products list
+   */
+  goToSettings() {
+    const route = SettingsRoutes.base();
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /**
+   * toggle the side nav visibility
+   */
+  toggleNav() {
     if (this.sideNavRef.current.style.display === 'block') {
       this.sideNavRef.current.style.display = 'none';
     } else {
@@ -72,43 +95,61 @@ class SideNav extends Component {
     }
   }
 
-  closeNav = () => {
-    console.log(this.sideNavRef.current.style.display);
+  /**
+   * close the side nav
+   */
+  closeNav() {
     this.sideNavRef.current.style.display = 'none';
   }
-
 
   /**
    * @return {ReactNode}
    */
   render() {
     return (
-      <aside className="menu sidenav">
+      <aside className="sidenav" ref={this.sideNavRef}>
 
-        <ul className="menu-list">
-          <li>
-            <a><i className="fa fa-clipboard">Dashboard</i></a>
-          </li>
-          <li>
-            <a><i className="fa fa-shopping-bag">Products</i></a>
-          </li>
-          <li>
-            <a><i className="fa fa-sitemap">Categories</i></a>
-          </li>
-          <li>
-            <a><i className="fa fa-users">Users</i></a>
-          </li>
-        </ul>
-        <ul className="menu-list">
-          <li>
-            <a className="is-active"><i className="fa fa-users">Settings</i></a>
-            <ul>
-              <li><a>Members</a></li>
-              <li><a>Plugins</a></li>
-            </ul>
-          </li>
-        </ul>
+        <a className="closebtn" onClick = {this.closeNav}>
+          &times;
+        </a>
 
+        <a className="nav-item">
+          <i className="fa fa-adn"></i>
+        </a>
+
+        <a
+          onClick = {this.goToDahsBoard}
+          className="nav-item">
+          <i className="fa fa-clipboard">
+            <span>Dashboard</span>
+          </i>
+        </a>
+        <a
+          onClick = {this.goToProducts}
+          className="nav-item">
+          <i className="fa fa-shopping-bag">
+            <span>Products</span>
+          </i>
+        </a>
+        <a
+          onClick = {this.goToCategories}
+          className="nav-item">
+          <i className="fa fa-sitemap">
+            <span>Categories</span>
+          </i>
+        </a>
+        <a className="nav-item">
+          <i className="fa fa-users">
+            <span>Users</span>
+          </i>
+        </a>
+        <a
+          onClick = {this.goToSettings}
+          className="nav-item">
+          <i className="fa fa-cog">
+            <span>Settings</span>
+          </i>
+        </a>
       </aside>
     );
   }
