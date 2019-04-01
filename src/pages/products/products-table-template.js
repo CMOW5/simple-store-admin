@@ -58,8 +58,8 @@ export default {
       'meta': {'searchable': true, 'sortable': true, 'translatable': false, 'boolean': true, 'slot': false, 'rogue': false, 'total': false, 'date': false, 'icon': false, 'clickable': false, 'customTotal': false, 'notExportable': false, 'nullLast': false, 'visible': true, 'hidden': false, 'sort': null},
     },
     {
-      'label': 'Units',
-      'name': 'units',
+      'label': 'Stock',
+      'name': 'stock',
       'data': 'people.phone',
       'meta': {'searchable': true, 'sortable': true, 'translatable': false, 'boolean': false, 'slot': false, 'rogue': false, 'total': false, 'date': false, 'icon': false, 'clickable': false, 'customTotal': false, 'notExportable': false, 'nullLast': false, 'visible': true, 'hidden': false, 'sort': null},
     },
@@ -84,11 +84,22 @@ export default {
     'actions': true,
     'actionsButtons': [
       {
-        'icon': 'fa fa-pencil',
-        'class': 'is-row-button',
+        'icon': 'fa fa-eye',
+        'class': '',
         'event': 'onActionButtonClicked',
-        'action': 'router',
-        'route': 'administration.people.edit',
+        'action': 'show',
+      },
+      {
+        'icon': 'fa fa-edit',
+        'class': '',
+        'event': 'onActionButtonClicked',
+        'action': 'edit',
+      },
+      {
+        'icon': 'fa fa-trash',
+        'class': '',
+        'event': 'onActionButtonClicked',
+        'action': 'delete',
       },
     ],
     'labels': {'crtNo': '#', 'actions': 'Actions'},
