@@ -40,7 +40,7 @@ class MainNavBar extends Component {
    */
   render() {
     return (
-      <nav className="navbar is-white">
+      <nav className="navbar is-info">
         <div className="container">
           <div className="navbar-brand">
             <a className="navbar-item brand-text" href="../">
