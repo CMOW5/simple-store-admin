@@ -28,8 +28,6 @@ import EditProductForm from 'pages/products/edit/EditProductForm';
 
 // categories
 import CategoriesTable from 'pages/categories/CategoriesTable';
-
-// import CategoriesList from 'pages/categories/CategoriesList';
 import ShowCategory from 'pages/categories/show/ShowCategory';
 import CreateCategoryForm from 'pages/categories/create/CreateCategoryForm';
 import EditCategoryForm from 'pages/categories/edit/EditCategoryForm';
@@ -38,6 +36,7 @@ import EditCategoryForm from 'pages/categories/edit/EditCategoryForm';
 import SettingsPage from 'pages/settings/SettingsPage';
 
 import Footer from 'components/footer/Footer';
+
 
 /**
  * main page
