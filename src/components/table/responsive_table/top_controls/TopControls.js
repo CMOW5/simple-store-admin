@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-
-import {TableContext} from '../table-context';
+import {TableContext} from '../context/table-context';
 
 /* styles */
 import './top-controls.css';
 
-/* utils */
-import _ from 'lodash';
+/* components */
+import SearchBar from './search_bar/SearchBar';
+import LeftButtons from './buttons/LeftButtons';
 
 /**
  *
@@ -18,19 +18,6 @@ export default class TopControls extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-      searchInputText: '',
-    };
-
-    const DEBOUNCE_TIME = props.template.config.debounce || 500;
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.search = this.search.bind(this);
-    this.debouncedSearch =
-      _.debounce(this.search, DEBOUNCE_TIME);
-    this.debouncedSearch = this.debouncedSearch.bind(this);
-    this.renderSearchBar = this.renderSearchBar.bind(this);
-    this.renderLeftButtons = this.renderLeftButtons.bind(this);
   }
 
   // the context is used to create a connection between
@@ -39,85 +26,17 @@ export default class TopControls extends Component {
   static contextType = TableContext;
 
   /** */
-  search() {
-    this.props.onSearch(this.state.searchInputText);
-  }
-
-  /**
-   * handle the changes in the form fields
-   * @param {*} event
-   */
-  handleInputChange(event) {
-    const inputText = event.target.value;
-    this.setState({
-      searchInputText: inputText,
-    }, this.debouncedSearch);
+  onSearch = (searchText) => {
+    this.props.onSearch(searchText);
   }
 
   /**
    * @param {*} buttonClicked
    * @param {*} rowData
    */
-  onButtonClicked(buttonClicked) {
+  onButtonClicked = (buttonClicked) => {
     const eventName = buttonClicked.event;
     this.context[eventName](buttonClicked);
-  }
-
-  /**
-   * @param {object} template
-   * @return {ReactNode}
-   */
-  renderLeftButtons(template) {
-    const buttons = template.topcontrols.buttons.left;
-
-    const buttonsNodes = buttons.map((button) => {
-      return (
-        <a
-          className = {'button ' + button.class}
-          onClick = {() => this.onButtonClicked(button)}
-          key = {button.label} >
-          <span>{button.label}</span>
-          <span className="icon is-small">
-            <i className = {button.icon}></i>
-          </span>
-        </a>
-      );
-    });
-
-    return (
-      <p className="buttons">
-        {buttonsNodes}
-      </p>
-    );
-  }
-
-  /**
-   * @param {object} template
-   * @return {ReactNode}
-   */
-  renderSearchBar(template) {
-    if (!template.config.searchable) {
-      return null;
-    }
-
-    return (
-      <div className="column">
-        <div className="field search-bar">
-          <p className="control has-icons-left">
-            <input
-              className="input has-text-centered is-rounded"
-              type="text"
-              placeholder="Buscar"
-              value={this.state.searchInputText}
-              onChange={this.handleInputChange}
-            />
-            <span className="icon is-small is-left">
-              <i className="fa fa-search"></i>
-            </span>
-          </p>
-        </div>
-      </div>
-    );
   }
 
   /**
@@ -131,11 +50,15 @@ export default class TopControls extends Component {
 
         <div className="columns is-desktop is-centered">
 
-          <div className="column">
-            {this.renderLeftButtons(template)}
-          </div>
+          <LeftButtons 
+            template = {template} 
+            onButtonClicked = {this.onButtonClicked}
+            />
 
-          {this.renderSearchBar(template)}
+          <SearchBar 
+            onSearch = {this.onSearch}
+            template = {template} 
+          />
 
           {/* right side buttons */}
           <div className="column"></div>

@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import {Tbody, Tr, Td} from '../tags/SuperResponsiveTable';
+import {Tbody, Tr, Td} from '../core/SuperResponsiveTable';
 
-import {TableContext} from '../table-context';
+import {TableContext} from '../context/table-context';
+
+// styles
+import './table-body.css';
+
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  *
@@ -15,9 +20,12 @@ export default class TableBody extends Component {
     this.state = {};
 
     // function bindings
-    this.renderBodyRows = this.renderBodyRows.bind(this);
-    this.appendActions = this.appendActions.bind(this);
-    this.actionButtonClicked = this.actionButtonClicked.bind(this);
+    this.onActionButtonClicked = this.onActionButtonClicked.bind(this);
+    this.mapRowsToNodes = this.mapRowsToNodes.bind(this);
+    this.appendActionsToColumns = this.appendActionsToColumns.bind(this);
+    this.appendActionsToRows = this.appendActionsToRows.bind(this);
+    this.appendActionsButtonsToSingleRow =
+      this.appendActionsButtonsToSingleRow.bind(this);
   }
 
   // the context is used to create a connection between
@@ -29,40 +37,71 @@ export default class TableBody extends Component {
    * @param {object} template
    * @return {ReactNode}
    */
-  renderBodyRows(template) {
-    let bodyData = template.body.data;
+  mapRowsToNodes(template) {
+    let columns = cloneDeep(template.columns);
+    let rows = cloneDeep(template.body.data);
 
-    if (template.config.actions) {
-      bodyData = bodyData.map((element) => {
-        element.actions =
-          this.appendActions(template.config.actionsButtons, element);
-        return element;
-      });
-    }
+    this.appendActionsToColumns(columns, template);
+    this.appendActionsToRows(rows, template);
 
-    const rows = bodyData.map((row) => {
-      const columns = template.columns.map((column) => {
+    const rowsNodes = rows.map((row) => {
+      const columnsNodes = columns.map((column) => {
         return (<Td key={column.name}>{row[column.name]}</Td>);
       });
+      return (<Tr key={row.id}>{columnsNodes}</Tr>);
+    });
+    return rowsNodes;
+  }
 
-      return (<Tr key={row.id}>{columns}</Tr>);
+  /**
+   * @param {*} columns
+   * @param {*} template
+   */
+  appendActionsToColumns(columns, template) {
+    if (!template.config.actions) {
+      return;
+    }
+    const label = template.config.labels.actions;
+    columns.push({
+      'label': label,
+      'name': 'actions',
+      'meta': {},
+    });
+  }
+
+  /**
+   * @param {array} rows
+   * @param {object} template
+   * @return {array}
+   */
+  appendActionsToRows(rows, template) {
+    if (!template.config.actions) {
+      return;
+    }
+
+    const rowsWithActions = rows.map((row) => {
+      row.actions =
+        this.appendActionsButtonsToSingleRow(template.config.actionsButtons,
+          row);
+      return row;
     });
 
-    return rows;
+    return rowsWithActions;
   }
 
   /**
    * @param {*} buttons
-   * @param {*} element
+   * @param {*} row
    * @return {*}
    */
-  appendActions(buttons, element) {
+  appendActionsButtonsToSingleRow(buttons, row) {
     const actionButtons =
       buttons.map((button, index) => {
         return (
           <a
-            onClick={() => this.actionButtonClicked(button, element)}
-            key={index} >
+            onClick={() => this.onActionButtonClicked(button, row)}
+            key={index}
+            className = "button is-small is-text table-actions" >
             <span className="icon is-small">
               <i className = {button.icon}></i>
             </span>
@@ -77,7 +116,7 @@ export default class TableBody extends Component {
    * @param {*} buttonClicked
    * @param {*} rowData
    */
-  actionButtonClicked(buttonClicked, rowData) {
+  onActionButtonClicked(buttonClicked, rowData) {
     const eventName = buttonClicked.event;
     this.context[eventName](buttonClicked, rowData);
   }
@@ -87,9 +126,11 @@ export default class TableBody extends Component {
    */
   render() {
     const template = this.props.template;
+    const rowsNodes = this.mapRowsToNodes(template);
+
     return (
       <Tbody>
-        {this.renderBodyRows(template)}
+        {rowsNodes}
       </Tbody>
     );
   }

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Table} from './responsive_table/tags/SuperResponsiveTable';
+import {Table} from './responsive_table/core/SuperResponsiveTable';
 import TopControls from './responsive_table/top_controls/TopControls';
 import TableHeader from './responsive_table/table_header/TableHeader';
 import TableBody from './responsive_table/table_body/TableBody';
 
-import {TableContext} from './responsive_table/table-context';
+import {TableContext} from './responsive_table/context/table-context';
 
 // styles
 import './responsive-table.css';

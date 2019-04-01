@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {Thead, Tr, Th} from '../tags/SuperResponsiveTable';
+import {Thead, Tr, Th} from '../core/SuperResponsiveTable';
+
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  *
@@ -10,50 +12,36 @@ export default class TableHeader extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
-
-    this.renderHeader = this.renderHeader.bind(this);
-    this.appendActionsHeader = this.appendActionsHeader.bind(this);
   }
 
   /**
    * @param {object} template
    * @return {ReactNode}
    */
-  renderHeader(template) {
-    let columns = template.columns;
+  mapColumnsToNodes = (template) => {
+    let columns = cloneDeep(template.columns);
+    this.appendActionsHeader(columns, template);
 
-    if (template.config.actions) {
-      columns =
-        this.appendActionsHeader(columns, template.config.labels.actions);
-    }
-
-    const columnsNodes = columns.map((column) => {
+    return columns.map((column) => {
       return (<Th key={column.label}>{column.label}</Th>);
     });
-
-    return (
-      <Thead className="has-background-light">
-        <Tr>
-          {columnsNodes}
-        </Tr>
-      </Thead>
-    );
   }
 
   /**
    * @param {*} columns
-   * @param {*} label
-   * @return {*}
+   * @param {*} template
    */
-  appendActionsHeader(columns, label) {
+  appendActionsHeader = (columns, template) => {
+    if (!template.config.actions) {
+      return;
+    }
+
+    const label = template.config.labels.actions;
     columns.push({
       'label': label,
       'name': 'actions',
       'meta': {},
     });
-
-    return columns;
   }
 
   /**
@@ -61,10 +49,14 @@ export default class TableHeader extends Component {
    */
   render() {
     const template = this.props.template;
+    const columnsNodes = this.mapColumnsToNodes(template);
+
     return (
-      <React.Fragment>
-        {this.renderHeader(template)}
-      </React.Fragment>
+      <Thead className="has-background-light">
+        <Tr>
+          {columnsNodes}
+        </Tr>
+      </Thead>
     );
   }
 }
