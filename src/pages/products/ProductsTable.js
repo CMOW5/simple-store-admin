@@ -19,6 +19,7 @@ import template from './products-table-template';
 /* components */
 import ResponsiveTable from 'components/table/ResponsiveTable';
 import Loading from 'components/utils/loading/Loading';
+import DeleteProductModal from './delete/DeleteProductModal';
 
 /**
  * product list component
@@ -33,7 +34,8 @@ class ProductsTable extends Component {
       products: [],
       tableTemplate: template,
       paginator: new Paginator(),
-      selectedProduct: {},
+      selectedProductToDelete: {},
+      showDeleteModal: false,
       searchKeyword: '',
       isFetching: true,
     };
@@ -41,10 +43,12 @@ class ProductsTable extends Component {
     this.fetchProducts = this.fetchProducts.bind(this);
     this.renderMainTable = this.renderMainTable.bind(this);
 
-    this.onCreateProductButonClicked =
-      this.onCreateProductButonClicked.bind(this);
-    this.onCreateButtonClicked =
-      this.onCreateButtonClicked.bind(this);
+    this.goToProductCreate = this.goToProductCreate.bind(this);
+    this.goToProductEdit = this.goToProductEdit.bind(this);
+    this.goToProductShow = this.goToProductShow.bind(this);
+    this.onActionButtonClicked = this.onActionButtonClicked.bind(this);
+    this.onDeleteSucess = this.onDeleteSucess.bind(this);
+    this.onDeleteCancel = this.onDeleteCancel.bind(this);
   }
 
   /**
@@ -53,13 +57,6 @@ class ProductsTable extends Component {
   componentDidMount() {
     // check if the user is logged
     this.fetchProducts();
-  }
-
-  /**
-   */
-  onCreateProductButonClicked() {
-    const route = productRoutes.create();
-    RouterHandler.goTo(this.props.history, route);
   }
 
   /**
@@ -104,7 +101,7 @@ class ProductsTable extends Component {
           template = {this.state.tableTemplate}
           onSearch = {this.onSearch}
           onActionButtonClicked = {this.onActionButtonClicked}
-          onCreateButtonClicked = {this.onCreateButtonClicked}
+          onCreateButtonClicked = {this.goToProductCreate}
         />
       );
     }
@@ -122,14 +119,75 @@ class ProductsTable extends Component {
    * @param {*} rowData
    */
   onActionButtonClicked(button, rowData) {
-    console.log('action button clicked', button, rowData);
+    const action = button.action;
+    const selectedProduct = rowData;
+
+    if (action === 'show') {
+      this.goToProductShow(selectedProduct.id);
+    } else if (action === 'edit') {
+      this.goToProductEdit(selectedProduct.id);
+    } else if (action === 'delete') {
+      this.showDeleteModal(selectedProduct);
+    }
   }
 
   /**
-   * @param {*} button
+   * @param {object} button
    */
-  onCreateButtonClicked(button) {
-    console.log('create button clicked', button);
+  goToProductCreate(button) {
+    const route = productRoutes.create();
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /**
+   * notify the parent that the see edit button was clicked
+   * @param {number} id product id
+   */
+  goToProductEdit(id) {
+    const route = productRoutes.edit(id);
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /**
+   * notify the parent that the see edit button was clicked
+   * @param {number} id product id
+   */
+  goToProductShow(id) {
+    const route = productRoutes.show(id);
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /**
+   * notify the parent that the see delete button was clicked
+   * @param {object} product product id
+   */
+  showDeleteModal(product) {
+    this.setState({
+      selectedProductToDelete: product,
+      showDeleteModal: true,
+    });
+  }
+
+  /**
+   *
+   */
+  onDeleteSucess() {
+    // refresh the products list
+    this.setState({
+      selectedProductToDelete: {},
+      showDeleteModal: false,
+    }, this.fetchProducts);
+  }
+
+  /**
+   * close the delete modal
+   * @param {object} product product id
+   */
+  onDeleteCancel() {
+    this.setState({
+      selectedProductToDelete: {},
+      showDeleteModal: false,
+    });
   }
 
   /**
@@ -139,6 +197,13 @@ class ProductsTable extends Component {
     return (
       <div>
         {this.renderMainTable()}
+
+        <DeleteProductModal
+          show = {this.state.showDeleteModal}
+          product = {this.state.selectedProductToDelete}
+          onDeleteSucess = {this.onDeleteSucess}
+          onDeleteCancel = {this.onDeleteCancel}
+        />
       </div>
     );
   }
