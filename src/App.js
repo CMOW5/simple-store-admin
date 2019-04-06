@@ -10,12 +10,8 @@ import Logger from 'utils/logger/logger';
 import './App.css';
 
 /* components */
-import SignInPage from 'pages/signin/SignInPage';
+import LoginPage from 'pages/login/LoginPage';
 import Main from 'pages/main/Main';
-import TestPage from 'pages/test/TestPage';
-// import requireAuth from 'components/auth/RequireAuth';
-
-// import TestComponent from 'components/test/TestComponent';
 
 /**
  * the root app component
@@ -51,12 +47,9 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
-          {/* <Route exact path='/test' component={TestComponent}/> */}
-          <Route exact path='/signin' component={SignInPage}/>
-          <Route exact path='/test' component={(TestPage)}/>
+          <Route exact path='/login' component={LoginPage}/>
           {/* <Route path='/' component={requireAuth(Main)}/> */}
           <Route path='/' component={(Main)}/>
-
         </Switch>
       </div>
     );

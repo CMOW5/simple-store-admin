@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
+import withStyles from 'react-jss';
 
-import './footer.css';
+import styles from './footer-styles';
+
 /**
  * footer component
  */
-export default class Footer extends Component {
+class Footer extends Component {
   /**
    * @param {*} props
    */
@@ -19,6 +21,8 @@ export default class Footer extends Component {
    * @return {ReactNode}
    */
   render() {
+    const {classes, children} = this.props;
+
     return (
 
       <footer className="footer">
@@ -29,14 +33,14 @@ export default class Footer extends Component {
 
             <div className="content">
 
-              <section className="footer-title">
-                                INFORMACIÓN
+              <section className = {classes.footerTitle}>
+                INFORMACIÓN
               </section>
 
               <section className="has-text-left-desktop">
-                <ul >
-                  <li>CONTÁCTENOS</li>
-                  <li>AVISO DE PRIVACIDAD</li>
+                <ul className = {classes.footerUl} >
+                  <li className = {classes.footerLi} >CONTÁCTENOS</li>
+                  <li className = {classes.footerLi} >AVISO DE PRIVACIDAD</li>
                 </ul>
               </section>
 
@@ -45,45 +49,39 @@ export default class Footer extends Component {
           </div>
 
           <div className="column is-4">
-
             <div className="content">
-
-              <section className="footer-title">
-                                        NUESTRAS REDES SOCIALES
+              <section className = {classes.footerTitle}>
+                NUESTRAS REDES SOCIALES
               </section>
 
-              <a
-                href = "https://www.facebook.com/"
+              <a href = "https://www.facebook.com/"
                 target = "_blank"
                 rel = "noopener noreferrer" >
-                <img
+                <img className={classes.footerImg}
                   src = {require('resources/images/social_networks/facebook.png')}
                   alt = "" />
               </a>
 
-              <a
-                href = "https://www.twitter.com/"
+              <a href = "https://www.twitter.com/"
                 target = "_blank"
                 rel = "noopener noreferrer" >
-                <img
+                <img className={classes.footerImg}
                   src = {require('resources/images/social_networks/twitter.png')}
                   alt = "" />
               </a>
 
-              <a
-                href = "https://www.instagram.com/"
+              <a href = "https://www.instagram.com/"
                 target = "_blank"
                 rel = "noopener noreferrer">
-                <img
+                <img className={classes.footerImg}
                   src = {require('resources/images/social_networks/instagram.png')}
                   alt="" />
               </a>
 
-              <a
-                href = "https://www.youtube.com/"
+              <a href = "https://www.youtube.com/"
                 target = "_blank"
                 rel = "noopener noreferrer">
-                <img
+                <img className={classes.footerImg}
                   src = {require('resources/images/social_networks/youtube.png')}
                   alt = "" />
               </a>
@@ -96,14 +94,14 @@ export default class Footer extends Component {
 
             <div className="content">
 
-              <section className="footer-title">
-                                INFORMACIÓN DE LA TIENDA
+              <section className = {classes.footerTitle}>
+                INFORMACIÓN DE LA TIENDA
               </section>
 
               <section className="has-text-left-desktop">
-                <ul>
-                  <li>DIRECCIÓN</li>
-                  <li>HORARIO</li>
+                <ul className = {classes.footerUl}>
+                  <li className = {classes.footerLi}>DIRECCIÓN</li>
+                  <li className = {classes.footerLi}>HORARIO</li>
                 </ul>
               </section>
 
@@ -118,3 +116,5 @@ export default class Footer extends Component {
     );
   }
 }
+
+export default withStyles(styles)(Footer);

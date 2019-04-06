@@ -7,18 +7,19 @@
     "axios": "^0.18.0",
     "bulma": "^0.7.1",
     "connected-react-router": "^4.3.0",
+    "create-react-context": "^0.2.3",
     "cross-env": "^5.1.5",
     "faker": "^4.1.0",
     "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-jss": "^8.6.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "create-react-context": "^0.2.3"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "dev": "cross-env NODE_PATH=./src npm run start",

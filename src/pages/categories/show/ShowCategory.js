@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 
+import withStyles from 'react-jss';
+import styles from './show-category-styles';
+import './show-category.css';
+
 /* redux */
 import {connect} from 'react-redux';
 import {goToRoute} from 'store/actions/router-actions';
@@ -19,9 +23,6 @@ import Category from 'models/category';
 
 /* utils */
 // import Logger from 'utils/logger/logger';
-
-/* styles */
-import './show-category.css';
 
 /* components */
 import ShowHeader from 'pages/utils/list_headers/ShowHeader';
@@ -148,7 +149,7 @@ export default
 withRouter(
   connect(
     mapStateToProps, mapDispatchToProps
-  )(ShowCategory));
+  )(withStyles(styles)(ShowCategory)));
 
 /**
  * a simple section component
@@ -159,13 +160,11 @@ function Section(props) {
   const title = props.title;
   const text = props.text;
   return (
-    <section className="section">
-      <div className="container">
-        <h1 className="title">{title}</h1>
-        <h2 className="subtitle">
-          {text}
-        </h2>
-      </div>
+    <section className="show-category-section">
+      <h1 className="title">{title}</h1>
+      <h2 className="subtitle">
+        {text}
+      </h2>
     </section>
   );
 }
@@ -182,19 +181,16 @@ function ImagesSection(props) {
 
     return (
       <div className="column is-2" key={index} >
-        <img className="product-image" src={image.url} alt="product" />
+        <img className="show-category-product-image" src={image.url} alt="product" />
       </div>
     );
   });
 
   return (
-    <section className="section">
-      <div className="container">
-        <h1 className="title">{title}</h1>
-        <div className="columns is-multiline">
-          {images}
-        </div>
-
+    <section className="show-category-section">
+      <h1 className="title">{title}</h1>
+      <div className="columns is-multiline">
+        {images}
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import withStyles from 'react-jss';
 
-import './side-nav.css';
+import styles from './sidenav-styles';
 
 /* redux */
 import {connect} from 'react-redux';
@@ -67,6 +68,10 @@ class SideNav extends Component {
     RouterHandler.goTo(this.props.history, route);
   }
 
+  /**
+   * @param {String} itemName
+   * @return {String}
+   */
   setMenuActive = (itemName) => {
     return (this.state.selectedItem === itemName ? 'is-active' : '');
   }
@@ -75,29 +80,31 @@ class SideNav extends Component {
    * @return {ReactNode}
    */
   render() {
+    const {classes, children} = this.props;
+
     return (
       <aside className="menu is-hidden-mobile">
-        <p className="menu-label">
+        <p className={`menu-label ${classes.menuLabel}`}>
           General
         </p>
         <ul className="menu-list">
           <li onClick = {this.goToDahsBoard}>
-            <a className = {this.setMenuActive('dashboard')}>
+            <a className = {`${this.setMenuActive('dashboard')} ${classes.menuList_a}`}>
               Dashboard
             </a>
           </li>
           <li onClick = {this.goToProducts}>
-            <a className = {this.setMenuActive('products')}>
+            <a className = {`${this.setMenuActive('products')} ${classes.menuList_a}`}>
               Products
             </a>
           </li>
           <li onClick = {this.goToCategories}>
-            <a className = {this.setMenuActive('categories')}>
+            <a className = {`${this.setMenuActive('categories')} ${classes.menuList_a}`}>
               Categories
             </a>
           </li>
           <li>
-            <a>
+            <a className = {`${this.setMenuActive('users')} ${classes.menuList_a}`}>
               Users
             </a>
           </li>
@@ -149,7 +156,10 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default
-withRouter(connect(mapStateToProps, mapDispatchToProps)(SideNav));
+withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideNav))
+);
+
 
 // The following code is based off a toggle menu by @Bradcomp
 // source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1

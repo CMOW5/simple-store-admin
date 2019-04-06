@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
+import withStyles from 'react-jss';
+
+import styles from './mainnav-styles';
 
 /* redux */
 import {connect} from 'react-redux';
 import {logoutAction, saveUser} from 'store/actions/user-actions';
 
 import {withRouter} from 'react-router-dom';
-
-/* styles */
-import './navbar.css';
 
 /**
  * main navbar component
@@ -39,11 +39,15 @@ class MainNavBar extends Component {
    * @return {ReactNode}
    */
   render() {
+    const {classes, children} = this.props;
+
     return (
-      <nav className="navbar is-info">
+      <nav className={`navbar is-info ${classes.mainNav}`}>
         <div className="container">
           <div className="navbar-brand">
-            <a className="navbar-item brand-text" href="../">
+            <a
+              className={`navbar-item brand-text ${classes.navbarItemBrandText}`}
+              href="../">
               Bulma Admin
             </a>
             <div className="navbar-burger burger" data-target="navMenu">
@@ -54,16 +58,20 @@ class MainNavBar extends Component {
           </div>
           <div id="navMenu" className="navbar-menu">
             <div className="navbar-start">
-              <a className="navbar-item" href="admin.html">
+              <a className={`navbar-item brand-text ${classes.navbarItem}`}
+                href="admin.html">
                 Home
               </a>
-              <a className="navbar-item" href="admin.html">
+              <a className={`navbar-item brand-text ${classes.navbarItem}`}
+                href="admin.html">
                 Orders
               </a>
-              <a className="navbar-item" href="admin.html">
+              <a className={`navbar-item brand-text ${classes.navbarItem}`}
+                href="admin.html">
                 Payments
               </a>
-              <a className="navbar-item" href="admin.html">
+              <a className={`navbar-item brand-text ${classes.navbarItem}`}
+                href="admin.html">
                 Exceptions
               </a>
             </div>
@@ -96,5 +104,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default
-withRouter(connect(mapStateToProps, mapDispatchToProps)(MainNavBar));
+withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MainNavBar))
+);
 

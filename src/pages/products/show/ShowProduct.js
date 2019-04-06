@@ -168,13 +168,11 @@ function Section(props) {
   const title = props.title;
   const text = props.text;
   return (
-    <section className="section">
-      <div className="container">
-        <h1 className="title">{title}</h1>
-        <h2 className="subtitle">
-          {text}
-        </h2>
-      </div>
+    <section className="show-product-section">
+      <h1 className="title">{title}</h1>
+      <h2 className="subtitle">
+        {text}
+      </h2>
     </section>
   );
 }
@@ -189,19 +187,16 @@ function ImagesSection(props) {
   const images = props.images.map((image, index) => {
     return (
       <div className="column is-2" key={index} >
-        <img className="product-image" src={image.url} alt="product" />
+        <img className="show-product-image" src={image.url} alt="product" />
       </div>
     );
   });
 
   return (
-    <section className="section">
-      <div className="container">
-        <h1 className="title">{title}</h1>
-        <div className="columns is-multiline">
-          {images}
-        </div>
-
+    <section className="show-product-section">
+      <h1 className="title">{title}</h1>
+      <div className="columns is-multiline">
+        {images}
       </div>
     </section>
   );
