@@ -4,14 +4,14 @@ import BaseUrls from './base-urls';
  * this helper class provides methods to get the
  * urls related to the products admin
  */
-export default class SiteInfoUrls extends BaseUrls {
+export default {
   /**
    * get the base api url
    * @return {string} the base url
    */
-  static base() {
-    return super.base() + '/admin/siteinfo';
-  }
+  base() {
+    return BaseUrls.base() + '/admin/siteinfo';
+  },
 
   /**
    * url to fetch products from db
@@ -20,9 +20,9 @@ export default class SiteInfoUrls extends BaseUrls {
    * @param {number} url
    * @return {string}
    */
-  static fetchInfo() {
+  fetchInfo() {
     return this.base();
-  }
+  },
 
   /**
    * url to update the site with the given id
@@ -30,7 +30,7 @@ export default class SiteInfoUrls extends BaseUrls {
    * @param {number} id resource id
    * @return {string}
    */
-  static update(id) {
+  update(id) {
     return this.base() + `/${id}`;
-  }
-}
+  },
+};

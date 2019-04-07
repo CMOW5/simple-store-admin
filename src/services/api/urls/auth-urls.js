@@ -3,46 +3,48 @@ import UserUrls from './user-urls';
 /**
  * this class defines the api urls related to the auth
  */
-export default class AuthUrls extends BaseUrls {
+
+export default {
   /**
-   * @return {string} the base url
+   * @return {string} the auth api base url
    */
-  static base() {
-    return super.base() + '/auth';
-  }
+  base() {
+    return BaseUrls.base() + '/auth';
+  },
 
   /**
-   * @return {string} the sigup api url
+   * @return {string} the signup api url
    */
-  static signup() {
+  signup() {
     return this.base() + '/register';
-  }
+  },
 
   /**
-   * @return {string} the sigin api url
+   * @return {string} the login api url
    */
-  static signin() {
+  signin() {
     return this.base() + '/login';
-  }
+  },
 
   /**
    * @return {string} the logout api url
    */
-  static logout() {
+  logout() {
     return this.base() + '/logout';
-  }
+  },
 
   /**
    * @return {string} the authenticated user api url
    */
-  static getAuthenticatedUser() {
+  getAuthenticatedUser() {
     return UserUrls.getAuthenticatedUser();
-  }
+  },
 
   /**
    * @return {string} the refresh token api url
    */
-  static refreshToken() {
+  refreshToken() {
     return this.base() + '/refresh';
-  }
+  },
 }
+;
