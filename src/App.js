@@ -6,9 +6,7 @@ import {withRouter} from 'react-router-dom';
 
 // redux
 import {connect} from 'react-redux';
-import {logoutAction, saveUser} from 'store/actions/user-actions';
-
-import AuthApi from 'services/api/auth/auth-api';
+import {getCurrentUserAction, saveUser} from 'store/actions/user-actions';
 
 /* styles */
 import './App.css';
@@ -48,18 +46,11 @@ class App extends Component {
       loading: true,
     });
 
-    AuthApi.getCurrentUser()
-      .then((response) => {
-        this.setState({
-          loading: false,
-        });
-
-        this.props.saveUser(response);
-      }).catch((error) => {
-        this.setState({
-          loading: false,
-        });
+    this.props.getCurrentUserAction().finally(() => {
+      this.setState({
+        loading: false,
       });
+    });
   }
 
   /** */
@@ -116,8 +107,8 @@ const mapStateToProps = (state) => {
 // map the actions i can execute (send) to the reducers
 const mapDispatchToProps = (dispatch) => {
   return {
-    logoutAction: () => {
-      dispatch(logoutAction({}));
+    getCurrentUserAction: () => {
+      return dispatch(getCurrentUserAction());
     }, // key = prop name created by redux , value = method
     saveUser: (user) => {
       dispatch(saveUser(user));
