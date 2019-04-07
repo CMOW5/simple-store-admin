@@ -5,7 +5,7 @@ import styles from './mainnav-styles';
 
 /* redux */
 import {connect} from 'react-redux';
-import {logoutAction, saveUser} from 'store/actions/user-actions';
+import {logoutAction} from 'store/actions/user-actions';
 
 import {withRouter} from 'react-router-dom';
 
@@ -22,6 +22,12 @@ class MainNavBar extends Component {
 
     /* methods bindings */
     this.goTo = this.goTo.bind(this);
+    this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
+  }
+
+  /** */
+  onLogoutButtonClicked() {
+    this.props.logoutAction();
   }
 
   /**
@@ -39,41 +45,73 @@ class MainNavBar extends Component {
    * @return {ReactNode}
    */
   render() {
-    const {classes, children} = this.props;
+    const {classes} = this.props;
 
     return (
-      <nav className={`navbar is-info ${classes.mainNav}`}>
-        <div className="container">
-          <div className="navbar-brand">
-            <a
-              className={`navbar-item brand-text ${classes.navbarItemBrandText}`}
-              href="../">
-              Bulma Admin
+      <nav
+        className={`navbar is-info ${classes.mainNav}`}
+        aria-label="main navigation" >
+
+        <div className="navbar-brand">
+          <a className="navbar-item" href="https://bulma.io">
+            <img
+              src="https://bulma.io/images/bulma-logo.png"
+              width="112" height="28"
+              alt = "bulma logo"
+            />
+          </a>
+
+          <a
+            role="button" className="navbar-burger burger"
+            aria-label="menu" aria-expanded="false"
+            data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="navbarBasicExample" className="navbar-menu">
+          <div className="navbar-start">
+            <a className="navbar-item">
+            Home
             </a>
-            <div className="navbar-burger burger" data-target="navMenu">
-              <span></span>
-              <span></span>
-              <span></span>
+
+            <a className="navbar-item">
+            Documentation
+            </a>
+
+            <div className="navbar-item has-dropdown is-hoverable">
+              <a className="navbar-link">
+              More
+              </a>
+
+              <div className="navbar-dropdown">
+                <a className="navbar-item">
+                About
+                </a>
+                <a className="navbar-item">
+                Jobs
+                </a>
+                <a className="navbar-item">
+                Contact
+                </a>
+                <hr className="navbar-divider" />
+                <a className="navbar-item">
+                Report an issue
+                </a>
+              </div>
             </div>
           </div>
-          <div id="navMenu" className="navbar-menu">
-            <div className="navbar-start">
-              <a className={`navbar-item brand-text ${classes.navbarItem}`}
-                href="admin.html">
-                Home
-              </a>
-              <a className={`navbar-item brand-text ${classes.navbarItem}`}
-                href="admin.html">
-                Orders
-              </a>
-              <a className={`navbar-item brand-text ${classes.navbarItem}`}
-                href="admin.html">
-                Payments
-              </a>
-              <a className={`navbar-item brand-text ${classes.navbarItem}`}
-                href="admin.html">
-                Exceptions
-              </a>
+
+          <div className="navbar-end">
+            <div className="navbar-item">
+              <div className="buttons">
+                <a onClick = {this.onLogoutButtonClicked}
+                  className="button is-primary">
+                  <strong>Log out</strong>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -95,11 +133,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logoutAction: () => {
-      dispatch(logoutAction({}));
-    }, // key = prop name created by redux , value = method
-    saveUser: (user) => {
-      dispatch(saveUser(user));
-    }, // key = prop name created by redux , value = method
+      return dispatch(logoutAction());
+    },
   };
 };
 
