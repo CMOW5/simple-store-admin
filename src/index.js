@@ -17,9 +17,9 @@ import './index.css';
 ReactDOM.render(
   // provide the store to the whole application
   <Provider store={store}>
-    {/* the forceRefresh config is set to stop firefox
+    {/* the forceRefresh = true config is set to stop firefox
       to prompt the save password dialog */}
-    <BrowserRouter forceRefresh = {true}>
+    <BrowserRouter forceRefresh = {false}>
       <App />
     </BrowserRouter>
   </Provider>,
