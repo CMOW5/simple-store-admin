@@ -25,16 +25,14 @@ export default class ProductsRequest {
   static count() {
     const url = ProductsUrls.count();
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.get(url)
-        .then((response) => {
-          const count = response.data[responseContentKey] || 0;
-          resolve(count);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    return HttpRequester.get(url)
+      .then((response) => {
+        const count = response.data[responseContentKey] || 0;
+        return Promise.resolve(count);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -48,18 +46,16 @@ export default class ProductsRequest {
   static getProducts(queryParams={}, optionalUrl) {
     let url = ProductsUrls.fetchProducts(queryParams, optionalUrl);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.get(url)
-        .then((response) => {
-          // const products = response.data.content;
-          const products = response.data[responseContentKey];
-          const paginator = response.data.paginator;
-          resolve({paginator: paginator, products: products});
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    return HttpRequester.get(url)
+      .then((response) => {
+        // const products = response.data.content;
+        const products = response.data[responseContentKey];
+        const paginator = response.data.paginator;
+        return Promise.resolve({paginator: paginator, products: products});
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -71,16 +67,14 @@ export default class ProductsRequest {
   static getProduct(id) {
     let url = ProductsUrls.fetchProduct(id);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.get(url)
-        .then((response) => {
-          const product = response.data[responseContentKey];
-          resolve(product);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    return HttpRequester.get(url)
+      .then((response) => {
+        const product = response.data[responseContentKey];
+        return Promise.resolve(product);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -95,22 +89,20 @@ export default class ProductsRequest {
 
     let url = ProductsUrls.create();
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url, data)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + response);
+    return HttpRequester.post(url, data)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + response);
 
-          /* get the created product data */
-          const productData = response.data[responseContentKey];
-          resolve(productData);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + error);
-          reject(error);
-        });
-    });
+        /* get the created product data */
+        const productData = response.data[responseContentKey];
+        return Promise.resolve(productData);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + error);
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -125,22 +117,20 @@ export default class ProductsRequest {
 
     let url = ProductsUrls.update(id);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.put(url, data)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + response);
+    return HttpRequester.put(url, data)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + response);
 
-          /* get the updated product data */
-          const productData = response.data[responseContentKey];
-          resolve(productData);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + error);
-          reject(error);
-        });
-    });
+        /* get the updated product data */
+        const productData = response.data[responseContentKey];
+        return Promise.resolve(productData);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + error);
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -154,18 +144,16 @@ export default class ProductsRequest {
     let url = ProductsUrls.delete(id);
     Logger.log(this.className() + methodName);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.delete(url)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + response);
-          resolve(response.data[responseContentKey]);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + error);
-          reject(error);
-        });
-    });
+    return HttpRequester.delete(url)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + response);
+        return Promise.resolve(response.data[responseContentKey]);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + error);
+        return Promise.reject(error);
+      });
   }
 }

@@ -26,16 +26,14 @@ export default class SiteInfoRequest {
   static getInfo() {
     let url = SiteInfoUrls.fetchInfo();
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.get(url)
-        .then((response) => {
-          const info = response.data.data;
-          resolve(info);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    return HttpRequester.get(url)
+      .then((response) => {
+        const info = response.data.data;
+        return Promise.resolve(info);
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -51,21 +49,19 @@ export default class SiteInfoRequest {
 
     let url = SiteInfoUrls.update(id);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url, data)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + response);
+    return HttpRequester.post(url, data)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + response);
 
-          /* get the updated info data */
-          const info = response.data.data.siteinfo;
-          resolve(info);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'data = ' + error);
-          reject(error);
-        });
-    });
+        /* get the updated info data */
+        const info = response.data.data.siteinfo;
+        return Promise.resolve(info);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'data = ' + error);
+        return Promise.reject(error);
+      });
   }
 }
