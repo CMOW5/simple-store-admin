@@ -137,7 +137,7 @@ class EditCategoryForm extends Component {
     if (!category) {
       return false;
     }
-    return category.id == this.state.id;
+    return Number(category.id) === Number(this.state.id);
   }
 
   /**

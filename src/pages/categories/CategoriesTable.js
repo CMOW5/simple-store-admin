@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
 
-/* redux */
-import {connect} from 'react-redux';
-import {goToRoute} from 'store/actions/router-actions';
-
 /* routes */
 import {withRouter} from 'react-router-dom';
 import RouterHandler from 'router/router-handler';
@@ -198,23 +194,4 @@ class CategoriesTable extends Component {
   }
 }
 
-// which properties of the global store do i wanna use in this component
-const mapStateToProps = (state) => {
-  return {
-    // router: state.routerReducer,
-    user: state.userReducer,
-  };
-};
-
-// map the actions i can execute (send) to the reducers
-const mapDispatchToProps = (dispatch) => {
-  return {
-    goToRoute: (route) => {
-      dispatch(goToRoute(route));
-    },
-  };
-};
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(CategoriesTable)
-);
+export default withRouter((CategoriesTable));

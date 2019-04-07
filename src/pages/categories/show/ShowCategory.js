@@ -4,10 +4,6 @@ import withStyles from 'react-jss';
 import styles from './show-category-styles';
 import './show-category.css';
 
-/* redux */
-import {connect} from 'react-redux';
-import {goToRoute} from 'store/actions/router-actions';
-
 /* router */
 import {withRouter} from 'react-router-dom';
 
@@ -129,27 +125,8 @@ class ShowCategory extends Component {
   }
 }
 
-// which properties of the global store do i wanna use in this component
-const mapStateToProps = (state) => {
-  return {
-    router: state.routerReducer,
-  };
-};
-
-// map the actions i can execute (send) to the reducers
-const mapDispatchToProps = (dispatch) => {
-  return {
-    goToRoute: (route) => {
-      dispatch(goToRoute(route));
-    }, // key = prop name created by redux , value = method
-  };
-};
-
 export default
-withRouter(
-  connect(
-    mapStateToProps, mapDispatchToProps
-  )(withStyles(styles)(ShowCategory)));
+withRouter((withStyles(styles)(ShowCategory)));
 
 /**
  * a simple section component
