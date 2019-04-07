@@ -4,16 +4,23 @@ import BaseUrls from './base-urls';
  */
 export default class AuthUrls extends BaseUrls {
   /**
+   * @return {string} the base url
+   */
+  static base() {
+    return super.base() + '/auth';
+  }
+
+  /**
    * @return {string} the sigup api url
    */
-  static signUp() {
+  static signup() {
     return this.base() + '/register';
   }
 
   /**
    * @return {string} the sigin api url
    */
-  static signIn() {
+  static signin() {
     return this.base() + '/login';
   }
 
