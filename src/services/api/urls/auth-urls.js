@@ -1,4 +1,5 @@
 import BaseUrls from './base-urls';
+import UserUrls from './user-urls';
 /**
  * this class defines the api urls related to the auth
  */
@@ -35,7 +36,7 @@ export default class AuthUrls extends BaseUrls {
    * @return {string} the authenticated user api url
    */
   static getAuthenticatedUser() {
-    return this.base() + '/user';
+    return UserUrls.getAuthenticatedUser();
   }
 
   /**
