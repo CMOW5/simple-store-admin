@@ -1,17 +1,24 @@
 import React, {Component} from 'react';
 
-/* router */
+// router
 import {Switch, Route} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
-/* utils */
-import Logger from 'utils/logger/logger';
+// redux
+import {connect} from 'react-redux';
+import {logoutAction, saveUser} from 'store/actions/user-actions';
+
+import AuthApi from 'services/api/auth/auth-api';
 
 /* styles */
 import './App.css';
 
 /* components */
+import PrivateRoute from 'components/utils/private_route/PrivateRoute';
 import LoginPage from 'pages/login/LoginPage';
 import Main from 'pages/main/Main';
+
+// import TestPage from 'pages/test/TestPage';
 
 /**
  * the root app component
@@ -22,41 +29,102 @@ class App extends Component {
    */
   constructor(props) {
     super(props);
-    this.componentName = 'App ';
-    Logger.log(this.componentName + ' contructor');
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
+
+    this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
-  /**
-   * update caused by a history change
-   * @param {*} props
-   * @param {*} state
-   * @return {*}
-   */
-  static getDerivedStateFromProps(props, state) {
-    Logger.log('App getderivedtstate = state, props', state);
-    Logger.log('props =', props);
-    return state;
+  /** */
+  componentDidMount() {
+    this.loadCurrentlyLoggedInUser();
+  }
+
+  /** */
+  loadCurrentlyLoggedInUser() {
+    this.setState({
+      loading: true,
+    });
+
+    AuthApi.getCurrentUser()
+      .then((response) => {
+        this.setState({
+          loading: false,
+        });
+
+        this.props.saveUser(response);
+      }).catch((error) => {
+        this.setState({
+          loading: false,
+        });
+      });
+  }
+
+  /** */
+  handleLogout() {
+    /* localStorage.removeItem(ACCESS_TOKEN);
+    this.setState({
+      authenticated: false,
+      currentUser: null,
+    });
+    Alert.success('You\'re safely logged out!'); */
   }
 
   /**
    * @return {ReactNode}
    */
   render() {
-    Logger.log(this.componentName + 'render method called');
+    if (this.state.loading) {
+      return <div> loading </div>;
+    }
+
     return (
       <div className="App">
         <Switch>
-          <Route exact path='/login' component={LoginPage}/>
+          <Route
+            path='/login'
+            render={(props) => (
+              <LoginPage authenticated = {this.props.user.authenticated} />
+            )}>
+          </Route>
+
+          <PrivateRoute
+            path="/"
+            authenticated = {this.props.user.authenticated}
+            currentUser = {this.props.user.authenticated}
+            component={Main}>
+          </PrivateRoute>
+
           {/* <Route path='/' component={requireAuth(Main)}/> */}
-          <Route path='/' component={(Main)}/>
         </Switch>
       </div>
     );
   }
 }
 
-export default App;
+// which properties of the global store do i wanna use in this component
+const mapStateToProps = (state) => {
+  return {
+    user: state.userReducer,
+    /* router: state.routerReducer, */
+  };
+};
 
 
-// export default App;
+// map the actions i can execute (send) to the reducers
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logoutAction: () => {
+      dispatch(logoutAction({}));
+    }, // key = prop name created by redux , value = method
+    saveUser: (user) => {
+      dispatch(saveUser(user));
+    }, // key = prop name created by redux , value = method
+  };
+};
+
+
+export default(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));
+
