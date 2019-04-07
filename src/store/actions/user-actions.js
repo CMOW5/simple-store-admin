@@ -19,44 +19,46 @@ export function saveUser(user) {
 
 /**
  * signin action
- * @param {*} param
- * @param {*} history
- * @return {*}
+ * @param {object} credentials
+ * @return {Promise}
  */
-export function signInAction() {
+export function loginAction(credentials) {
   return async (dispatch) => {
     try {
-      const user = await AuthApi.getAuthenticatedUser();
-      console.log('authenticated = ', user);
-      dispatch({type: AUTHENTICATED});
-    } catch (error) {
-      dispatch({
-        type: AUTHENTICATION_ERROR,
-        payload: 'Invalid email or password',
-      });
-    }
-  };
-}
-
-/**
- * signin action
- * @param {*} param
- * @param {*} history
- * @return {*}
- */
-export function getAuthenticatedUserAction() {
-  return async (dispatch) => {
-    try {
-      const user = await AuthApi.getAuthenticatedUser();
+      const user = await AuthApi.login(credentials);
       dispatch({
         type: AUTHENTICATED,
         payload: user,
       });
+      return Promise.resolve(user);
     } catch (error) {
       dispatch({
         type: AUTHENTICATION_ERROR,
         payload: 'logout error',
       });
+      return Promise.reject(error);
+    }
+  };
+}
+
+/**
+ * @return {Promise}
+ */
+export function getCurrentUserAction() {
+  return async (dispatch) => {
+    try {
+      const user = await AuthApi.getCurrentUser();
+      dispatch({
+        type: AUTHENTICATED,
+        payload: user,
+      });
+      return Promise.resolve(user);
+    } catch (error) {
+      dispatch({
+        type: AUTHENTICATION_ERROR,
+        payload: 'logout error',
+      });
+      return Promise.reject(error);
     }
   };
 }
@@ -84,7 +86,7 @@ export function logoutAction() {
  * @param {*} name
  * @return {Object} the new state
  */
-export function setName2(name) {
+export function test(name) {
   /*
   return dispatch => {
       setTimeout(() => {
