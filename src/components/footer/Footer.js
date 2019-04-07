@@ -21,7 +21,7 @@ class Footer extends Component {
    * @return {ReactNode}
    */
   render() {
-    const {classes, children} = this.props;
+    const {classes} = this.props;
 
     return (
 
