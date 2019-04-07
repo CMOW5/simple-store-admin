@@ -12,10 +12,6 @@ import AuthApi from 'services/api/auth/auth-api';
 
 import Form from 'utils/form/form';
 
-import {withRouter} from 'react-router-dom';
-import RouterHandler from 'router/router-handler';
-import BaseRoutes from 'router/routes/base-routes';
-
 /** */
 class LoginPage extends Component {
   /**
@@ -77,7 +73,6 @@ class LoginForm extends Component {
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.goToDahsBoard = this.goToDahsBoard.bind(this);
   }
 
   /** @param {*} event */
@@ -101,21 +96,11 @@ class LoginForm extends Component {
     });
 
     AuthApi.login(form.getDataAsJson())
-      .then((response) => {
-        console.log('response user = ', response);
-        // this.goToDahsBoard(); THIS DOES NOT CAUSE A AUTHENTICATED CHECK ON APP.JS
-        this.props.saveUser(response);
+      .then((user) => {
+        this.props.saveUser(user);
       }).catch((error) => {
-        console.log('error user = ', error);
+        console.log('error loging user = ', error);
       });
-  }
-
-  /**
-   * go to the dashboard route
-   */
-  goToDahsBoard() {
-    const route = BaseRoutes.base();
-    RouterHandler.goTo(this.props.history, route);
   }
 
   /** @return {ReactNode} */
@@ -188,8 +173,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default(
-  withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginPage)))
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginPage))
 );
 
 
