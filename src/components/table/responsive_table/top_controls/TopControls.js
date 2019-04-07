@@ -18,6 +18,7 @@ export default class TopControls extends Component {
    */
   constructor(props) {
     super(props);
+    this.state = {};
   }
 
   // the context is used to create a connection between
