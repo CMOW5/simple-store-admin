@@ -104,8 +104,6 @@ export default class HttpRequester {
         url: url,
         data: data,
         headers: headers,
-
-        // headers: {Authorization: 'Bearer ' + token},
       })
         .then((response) => {
           const methodName = ' then(..) ';
