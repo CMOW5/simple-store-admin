@@ -20,7 +20,7 @@ export default class AuthApi {
    * @return {string}
    */
   static className() {
-    return 'Auth';
+    return 'AuthApi';
   }
 
   /**
@@ -80,7 +80,7 @@ export default class AuthApi {
       return Promise.reject('No access token set.');
     }
 
-    const url = 'http://localhost:8000/user/me';
+    const url = AuthUrls.getAuthenticatedUser();
 
     return HttpRequester.get(url)
       .then((response) => {
@@ -90,31 +90,6 @@ export default class AuthApi {
       .catch((error) => {
         return Promise.reject(error);
       });
-
-    // get the user data
-  /*   return request({
-      url: API_BASE_URL + '/user/me',
-      method: 'GET',
-    }); */
-  }
-
-  /**
-   * @param {Object} data the data to be sent in the request body
-   * @return {Promise} the authenticated user
-   */
-  static async getAuthenticatedUser(data = {}) {
-    const methodName = ' getAuthenticatedUser() ';
-    const url = AuthUrls.getAuthenticatedUser();
-    Logger.log(this.className() + methodName);
-
-    // try to get the current authenticated user
-    try {
-      const response = await HttpRequester.post(url, data);
-      const user = response.data.data;
-      return user;
-    } catch (error) {
-      throw error;
-    }
   }
 
   /**
