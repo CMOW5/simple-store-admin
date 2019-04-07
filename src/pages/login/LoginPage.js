@@ -1,7 +1,20 @@
 import React, {Component} from 'react';
-import withStyles from 'react-jss';
+import {Redirect} from 'react-router-dom';
 
+import withStyles from 'react-jss';
 import styles from './login-page-styles';
+
+// redux
+import {connect} from 'react-redux';
+import {saveUser} from 'store/actions/user-actions';
+
+import AuthApi from 'services/api/auth/auth-api';
+
+import Form from 'utils/form/form';
+
+import {withRouter} from 'react-router-dom';
+import RouterHandler from 'router/router-handler';
+import BaseRoutes from 'router/routes/base-routes';
 
 /** */
 class LoginPage extends Component {
@@ -9,7 +22,15 @@ class LoginPage extends Component {
    * @return {ReactNode}
    */
   render() {
-    const {classes, children} = this.props;
+    const {classes} = this.props;
+
+    if (this.props.authenticated) {
+      return <Redirect
+        to={{
+          pathname: '/',
+          state: {from: this.props.location},
+        }}/>;
+    }
 
     return (
       <section
@@ -28,40 +49,8 @@ class LoginPage extends Component {
                   <img className={classes.avatarImg} src="https://placehold.it/128x128" alt="avatar" />
                 </figure>
 
-                <form>
-                  <div className="field">
-                    <div className="control">
-                      <input
-                        className="input is-large"
-                        type="email"
-                        placeholder="Your Email"
-                        autofocus="" />
-                    </div>
-                  </div>
+                <LoginForm {...this.props} />
 
-                  <div className="field">
-                    <div className="control">
-                      <input
-                        className="input is-large"
-                        type="password"
-                        placeholder="Your Password"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="field">
-                    <label className="checkbox">
-                      <input type="checkbox" />
-                        Remember me
-                    </label>
-                  </div>
-
-                  <button
-                    className="button is-block is-info is-large is-fullwidth">
-                    Login
-                  </button>
-
-                </form>
               </div>
               <p className="has-text-grey">
                 <a href="../">Sign Up</a> &nbsp;·&nbsp;
@@ -76,5 +65,131 @@ class LoginPage extends Component {
   }
 }
 
-export default withStyles(styles)(LoginPage);
+/** */
+class LoginForm extends Component {
+  /** @param {object} props */
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+      form: new Form(),
+    };
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.goToDahsBoard = this.goToDahsBoard.bind(this);
+  }
+
+  /** @param {*} event */
+  handleInputChange(event) {
+    const target = event.target;
+    const inputName = target.name;
+    const inputValue = target.value;
+
+    this.setState({
+      [inputName]: inputValue,
+    });
+  }
+
+  /** @param {*} event */
+  handleSubmit(event) {
+    event.preventDefault();
+
+    const form = new Form({
+      email: this.state.email,
+      password: this.state.password,
+    });
+
+    AuthApi.login(form.getDataAsJson())
+      .then((response) => {
+        console.log('response user = ', response);
+        // this.goToDahsBoard(); THIS DOES NOT CAUSE A AUTHENTICATED CHECK ON APP.JS
+        this.props.saveUser(response);
+      }).catch((error) => {
+        console.log('error user = ', error);
+      });
+  }
+
+  /**
+   * go to the dashboard route
+   */
+  goToDahsBoard() {
+    const route = BaseRoutes.base();
+    RouterHandler.goTo(this.props.history, route);
+  }
+
+  /** @return {ReactNode} */
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+
+        <div className="field">
+          <div className="control">
+            <input
+              className="input is-large"
+              type="email"
+              name="email"
+              placeholder="Email"
+              autoFocus=""
+              value={this.state.email} onChange={this.handleInputChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="field">
+          <div className="control">
+            <input
+              className="input is-large"
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={this.state.password}
+              onChange={this.handleInputChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="checkbox">
+            <input type="checkbox" />
+            Remember me
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="button is-block is-info is-large is-fullwidth">
+          Login
+        </button>
+
+      </form>
+    );
+  }
+}
+
+// which properties of the global store do i wanna use in this component
+const mapStateToProps = (state) => {
+  return {
+    user: state.userReducer,
+    /* router: state.routerReducer, */
+  };
+};
+
+
+// map the actions i can execute (send) to the reducers
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveUser: (user) => {
+      dispatch(saveUser(user));
+    }, // key = prop name created by redux , value = method
+  };
+};
+
+export default(
+  withRouter(
+    connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginPage)))
+);
+
 
