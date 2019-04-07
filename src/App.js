@@ -76,7 +76,7 @@ class App extends Component {
         <Switch>
           <Route
             path='/login'
-            render={(props) => (
+            render={() => (
               <LoginPage authenticated = {this.props.user.authenticated} />
             )}>
           </Route>
