@@ -70,13 +70,15 @@ export function getCurrentUserAction() {
  * @return {*}
  */
 export function logoutAction() {
-  return async (dispatch) => {
-    AuthApi.logout()
-      .then((response) => {
+  return (dispatch) => {
+    return AuthApi.logout()
+      .then(() => {
         dispatch({type: UNAUTHENTICATED});
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch({type: AUTHENTICATION_ERROR});
+        return Promise.reject();
       });
   };
 }
