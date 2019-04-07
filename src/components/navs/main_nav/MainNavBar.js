@@ -41,6 +41,11 @@ class MainNavBar extends Component {
     this.setSelectedItem(route);
   }
 
+  toggleSideNav = () => {
+    this.props.toggleSideNav();
+  }
+
+
   /**
    * @return {ReactNode}
    */
@@ -53,7 +58,9 @@ class MainNavBar extends Component {
         aria-label="main navigation" >
 
         <div className="navbar-brand">
-          <a className="navbar-item" href="https://bulma.io">
+          <a 
+            onClick = {this.toggleSideNav}
+            className="navbar-item">
             <img
               src="https://bulma.io/images/bulma-logo.png"
               width="112" height="28"

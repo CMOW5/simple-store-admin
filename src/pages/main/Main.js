@@ -19,7 +19,13 @@ export default class Main extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showSideNav: false,
+    };
+  }
+
+  toggleSideNav = () => {
+    this.child.toggleDrawerFromParent(true);
   }
 
   /**
@@ -28,12 +34,14 @@ export default class Main extends Component {
   render() {
     return (
       <React.Fragment>
-        <MainNavBar />
+        <MainNavBar toggleSideNav = {this.toggleSideNav} />
         <div className = "container">
           <div className="columns">
 
             <aside className="column is-3">
-              <SideNav />
+              <SideNav
+                onRef={(ref) => (this.child = ref)}
+              />
             </aside>
 
             <section className="column">
