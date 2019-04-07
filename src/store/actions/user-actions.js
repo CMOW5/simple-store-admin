@@ -1,4 +1,4 @@
-import Auth from 'services/api/auth/auth';
+import AuthApi from 'services/api/auth/auth-api';
 
 export const SAVE_USER = 'save_user';
 export const AUTHENTICATED = 'authenticated_user';
@@ -26,7 +26,7 @@ export function saveUser(user) {
 export function signInAction() {
   return async (dispatch) => {
     try {
-      const user = await Auth.getAuthenticatedUser();
+      const user = await AuthApi.getAuthenticatedUser();
       console.log('authenticated = ', user);
       dispatch({type: AUTHENTICATED});
     } catch (error) {
@@ -47,7 +47,7 @@ export function signInAction() {
 export function getAuthenticatedUserAction() {
   return async (dispatch) => {
     try {
-      const user = await Auth.getAuthenticatedUser();
+      const user = await AuthApi.getAuthenticatedUser();
       dispatch({
         type: AUTHENTICATED,
         payload: user,
@@ -69,7 +69,7 @@ export function getAuthenticatedUserAction() {
  */
 export function logoutAction() {
   return async (dispatch) => {
-    Auth.logout()
+    AuthApi.logout()
       .then((response) => {
         dispatch({type: UNAUTHENTICATED});
       })

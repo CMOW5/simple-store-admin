@@ -8,7 +8,6 @@ import logger from 'redux-logger';
 
 // reducers
 import userReducer from './reducers/user-reducer';
-import routerReducer from './reducers/router-reducer';
 
 const createStoreWithMiddleware
   = applyMiddleware(
@@ -19,7 +18,6 @@ const createStoreWithMiddleware
 const rootReducer = combineReducers(
   {
     userReducer,
-    routerReducer,
   });
 
 export default createStoreWithMiddleware(

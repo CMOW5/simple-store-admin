@@ -3,10 +3,6 @@ import withStyles from 'react-jss';
 
 import styles from './sidenav-styles';
 
-/* redux */
-import {connect} from 'react-redux';
-import {goToRoute} from 'store/actions/router-actions';
-
 /* routes */
 import {withRouter} from 'react-router-dom';
 import RouterHandler from 'router/router-handler';
@@ -14,7 +10,6 @@ import BaseRoutes from 'router/routes/base-routes';
 import ProductRoutes from 'router/routes/products-routes';
 import CategoriesRoutes from 'router/routes/categories-routes';
 import SettingsRoutes from 'router/routes/settings-routes';
-
 
 /** */
 class SideNav extends Component {
@@ -80,7 +75,7 @@ class SideNav extends Component {
    * @return {ReactNode}
    */
   render() {
-    const {classes, children} = this.props;
+    const {classes} = this.props;
 
     return (
       <aside className="menu is-hidden-mobile">
@@ -139,35 +134,4 @@ class SideNav extends Component {
   }
 }
 
-// which properties of the global store do i wanna use in this component
-const mapStateToProps = (state) => {
-  return {
-    router: state.routerReducer,
-  };
-};
-
-// map the actions i can execute (send) to the reducers
-const mapDispatchToProps = (dispatch) => {
-  return {
-    goToRoute: (route) => {
-      dispatch(goToRoute(route));
-    }, // key = prop name created by redux , value = method
-  };
-};
-
-export default
-withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideNav))
-);
-
-
-// The following code is based off a toggle menu by @Bradcomp
-// source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1
-/* (function() {
-  var burger = document.querySelector('.burger');
-  var menu = document.querySelector('#'+burger.dataset.target);
-  burger.addEventListener('click', function() {
-      burger.classList.toggle('is-active');
-      menu.classList.toggle('is-active');
-  });
-})(); */
+export default withRouter((withStyles(styles)(SideNav)));
