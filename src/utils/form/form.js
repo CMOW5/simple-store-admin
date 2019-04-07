@@ -12,7 +12,7 @@ export default class Form {
    *
    * @param {object} data
    */
-  constructor(data) {
+  constructor(data = {}) {
     this.originalData = data;
     this.files = {};
 
