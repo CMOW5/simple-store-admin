@@ -31,20 +31,19 @@ export default class AuthApi {
    */
   static login(credentials) {
     const url = AuthUrls.signin();
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url, credentials)
-        .then((response) => {
-          let userData = response.data[responseContentKey].user;
-          userData.token = response.data[responseContentKey].token;
-          TokenHandler.saveToken(userData.token);
-          resolve(userData);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'error = ', error);
-          reject(error);
-        });
-    });
+
+    return HttpRequester.post(url, credentials)
+      .then((response) => {
+        let userData = response.data[responseContentKey].user;
+        userData.token = response.data[responseContentKey].token;
+        TokenHandler.saveToken(userData.token);
+        return Promise.resolve(userData);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'error = ', error);
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -59,19 +58,17 @@ export default class AuthApi {
     const url = AuthUrls.signUp();
     Logger.log(this.className() + methodName);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url, data)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'response = ', response);
-          resolve(response);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'error = ', error);
-          reject(error);
-        });
-    });
+    return HttpRequester.post(url, data)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'response = ', response);
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'error = ', error);
+        return Promise.reject(error);
+      });
   }
 
   /** @return {object} */
@@ -102,20 +99,18 @@ export default class AuthApi {
 
     Logger.log(this.className() + methodName);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'response = ', response);
-          TokenHandler.clearToken();
-          resolve(response);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'error = ', error);
-          reject(error);
-        });
-    });
+    return HttpRequester.post(url)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'response = ', response);
+        TokenHandler.clearToken();
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'error = ', error);
+        return Promise.reject(error);
+      });
   }
 
   /**
@@ -129,21 +124,19 @@ export default class AuthApi {
     const url = AuthUrls.refreshToken();
     Logger.log(this.className() + methodName);
 
-    return new Promise((resolve, reject) => {
-      HttpRequester.post(url, data)
-        .then((response) => {
-          const methodName = ' then(..) ';
-          Logger.log(this.className() + methodName + 'response = ', response);
-          const newToken = response.data.data.token;
-          const user = response.data.data.user;
-          TokenHandler.saveToken(newToken);
-          resolve(user);
-        })
-        .catch((error) => {
-          const methodName = ' catch(..) ';
-          Logger.log(this.className() + methodName + 'error = ', error);
-          reject(error);
-        });
-    });
+    return HttpRequester.post(url, data)
+      .then((response) => {
+        const methodName = ' then(..) ';
+        Logger.log(this.className() + methodName + 'response = ', response);
+        const newToken = response.data.data.token;
+        const user = response.data.data.user;
+        TokenHandler.saveToken(newToken);
+        return Promise.resolve(user);
+      })
+      .catch((error) => {
+        const methodName = ' catch(..) ';
+        Logger.log(this.className() + methodName + 'error = ', error);
+        return Promise.reject(error);
+      });
   }
 }
