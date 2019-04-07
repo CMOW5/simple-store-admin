@@ -16,7 +16,6 @@ const createStoreWithMiddleware = applyMiddleware(
 export default createStoreWithMiddleware(
   rootReducer,
   {},
-  // applyMiddleware(logger, thunk, promise())
 
   // enable redux dev tools
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
