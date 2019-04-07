@@ -84,19 +84,26 @@ export default class HttpRequester {
     Logger.log(this.className() + methodName +
       'requestType= ' + requestType + ' url= ' + url + ' data= ', data);
 
+    let headers = {
+      // 'Accept': 'application/json',
+      'Content-type': 'application/json',
+      // "Authorization": "Bearer " + sessionStorage.getItem('jwt')
+    };
+
     // get the token first
     const token = TokenHandler.getToken();
+
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token;
+    }
+
 
     return new Promise((resolve, reject) => {
       axios({
         method: requestType,
         url: url,
         data: data,
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          // "Authorization": "Bearer " + sessionStorage.getItem('jwt')
-        },
+        headers: headers,
 
         // headers: {Authorization: 'Bearer ' + token},
       })
@@ -105,10 +112,10 @@ export default class HttpRequester {
           Logger.log(this.className() + methodName +
             'response = ', response);
 
-          const token = this.getTokenFromResponse(response);
-          if (token) {
-            TokenHandler.saveToken(token);
-          }
+          // const token = this.getTokenFromResponse(response);
+          // if (token) {
+          //   TokenHandler.saveToken(token);
+          // }
 
           this.onSuccess(response.data);
           resolve(response);
