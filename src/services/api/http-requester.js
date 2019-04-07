@@ -60,6 +60,10 @@ export function submit(requestType, url, data = {}) {
         /* if (status === 401) {
             // EventProvider.fire("unauthorized");
           } */
+        if (isUnauthenticatedResponse(error.response)) {
+          redirectToLogin();
+        }
+
         reject(error);
       });
   });
@@ -117,3 +121,22 @@ function patchRequest(url, data={}) {
 function deleteRequest(url) {
   return submit('delete', url);
 };
+
+/**
+ *
+ * @param {*} response
+ * @return {boolean}
+ */
+function isUnauthenticatedResponse(response) {
+  if (response && response.status) {
+    return response.status === 401;
+  } else {
+    return false;
+  }
+}
+
+/** */
+function redirectToLogin() {
+  TokenHandler.clearToken();
+  window.location.replace('http://localhost:3000/login');
+}
