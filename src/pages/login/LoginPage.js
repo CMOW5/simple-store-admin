@@ -70,6 +70,7 @@ class LoginForm extends Component {
       email: '',
       password: '',
       form: new Form(),
+      loading: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -95,12 +96,26 @@ class LoginForm extends Component {
       password: this.state.password,
     });
 
+    this.setState({
+      loading: true,
+    });
+
     AuthApi.login(form.getDataAsJson())
       .then((user) => {
         this.props.saveUser(user);
       }).catch((error) => {
-        console.log('error loging user = ', error);
+        this.setState({
+          loading: false,
+        });
       });
+  }
+
+  loginButtonClass = () => {
+    if (this.state.loading) {
+      return 'button is-block is-info is-large is-fullwidth is-loading';
+    } else {
+      return 'button is-block is-info is-large is-fullwidth';
+    }
   }
 
   /** @return {ReactNode} */
@@ -136,16 +151,9 @@ class LoginForm extends Component {
           </div>
         </div>
 
-        <div className="field">
-          <label className="checkbox">
-            <input type="checkbox" />
-            Remember me
-          </label>
-        </div>
-
         <button
           type="submit"
-          className="button is-block is-info is-large is-fullwidth">
+          className = {this.loginButtonClass()}>
           Login
         </button>
 
