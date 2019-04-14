@@ -129,14 +129,15 @@ export default class TableBody extends Component {
    *
    * @param {object} row
    * @param {object} column
-   * @return {objct}
+   * @return {ReactNode}
    */
   getValueFromData = (row, column) => {
     const data = column.name;
-    return data.split('.').reduce((o, i) => {
+    const value = data.split('.').reduce((o, i) => {
       if (o) return o[i];
       else return undefined;
     }, row);
+    return (<div>{value}</div>);
   }
 
   /**
