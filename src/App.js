@@ -67,11 +67,7 @@ class App extends Component {
    * @return {ReactNode}
    */
   render() {
-    if (this.state.loading) {
-      return <div> loading </div>;
-    }
-
-    return (
+    return this.state.loading ? <div> loading </div> : (
       <div className="App">
         <Switch>
           <Route
