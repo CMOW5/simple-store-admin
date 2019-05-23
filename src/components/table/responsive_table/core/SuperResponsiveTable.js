@@ -94,6 +94,7 @@ export const Tr = (props) => (
 
 export const Th = (props) => <th {...allowed(props)} />;
 export const Tbody = (props) => <tbody {...allowed(props)} />;
+export const TFooter = (props) => <tfoot {...allowed(props)} />;
 
 /**
  *
