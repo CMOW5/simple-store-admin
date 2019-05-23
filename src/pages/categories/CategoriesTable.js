@@ -18,6 +18,8 @@ import ResponsiveTable from 'components/table/ResponsiveTable';
 import Loading from 'components/utils/loading/Loading';
 import DeleteCategoryModal from './delete/DeleteCategoryModal';
 
+import Pagination from 'components/pagination/Pagination';
+
 /** */
 class CategoriesTable extends Component {
   /**
@@ -35,7 +37,6 @@ class CategoriesTable extends Component {
       isFetching: true,
     };
     this.fetchCategories = this.fetchCategories.bind(this);
-    this.renderMainTable = this.renderMainTable.bind(this);
 
     this.goToCategoryCreate = this.goToCategoryCreate.bind(this);
     this.goToCategoryEdit = this.goToCategoryEdit.bind(this);
@@ -74,29 +75,6 @@ class CategoriesTable extends Component {
       tableTemplate: tableTemplate,
       isFetching: false,
     });
-  }
-
-  /**
-   * render the categories table or a loading icon
-   * while the fetching is still in progress
-   *
-   * @return {ReactNode}
-   * TODO: improve this function readability creating a new table component
-   * and making the function pure (state.isFetching)
-   */
-  renderMainTable() {
-    if (this.state.isFetching) {
-      return <Loading show={true} title="categories" />;
-    } else {
-      return (
-        <ResponsiveTable
-          template = {this.state.tableTemplate}
-          onSearch = {this.onSearch}
-          onActionButtonClicked = {this.onActionButtonClicked}
-          onCreateButtonClicked = {this.goToCategoryCreate}
-        />
-      );
-    }
   }
 
   /**
@@ -175,11 +153,45 @@ class CategoriesTable extends Component {
     });
   }
 
+  onPageSelected = (url) => {
+    console.log(url);
+  }
+
   /**
    * @return {ReactNode}
    */
   render() {
-    return (
+    return this.state.isFetching ? <Loading show={true} title="categories" /> :
+      (
+        <React.Fragment>
+          <ResponsiveTable
+            template = {this.state.tableTemplate}
+            paginator = {this.state.paginator}
+            onSearch = {this.onSearch}
+            onActionButtonClicked = {this.onActionButtonClicked}
+            onCreateButtonClicked = {this.goToCategoryCreate}
+          />
+
+          <Pagination
+            paginator = {this.state.paginator}
+            onPageSelected = {this.onPageSelected}
+          />
+
+          <DeleteCategoryModal
+            show = {this.state.showDeleteModal}
+            category = {this.state.selectedCategoryToDelete}
+            onDeleteSucess = {this.onDeleteSucess}
+            onDeleteCancel = {this.onDeleteCancel}
+          />
+        </React.Fragment>
+      );
+  }
+}
+
+export default withRouter((CategoriesTable));
+
+/*
+return (
       <div>
         {this.renderMainTable()}
 
@@ -191,7 +203,4 @@ class CategoriesTable extends Component {
         />
       </div>
     );
-  }
-}
-
-export default withRouter((CategoriesTable));
+    */
