@@ -26,7 +26,7 @@ class Pagination extends Component {
    * go to the next pagination item
    */
   goToNext() {
-    const url = this.props.paginator.nextPageUrl();
+    const url = this.props.paginator.getNextPageUrl();
     this.props.onPageSelected(url);
   }
 
@@ -34,7 +34,7 @@ class Pagination extends Component {
    * go to the previous pagination item
    */
   goToPrev() {
-    const url = this.props.paginator.previousPageUrl();
+    const url = this.props.paginator.getPreviousPageUrl();
     this.props.onPageSelected(url);
   }
 
@@ -47,60 +47,78 @@ class Pagination extends Component {
   }
 
   /**
-   * get a styled unselected page item
-   * @param {*} index
+   * render the pagination items
+   *
+   * @param {Paginator} paginator
    * @return {*}
    */
-  getPageItem(index) {
-    return (
-      <a
-        onClick = {this.goToPage.bind(this, index)}
-        className="pagination-link" aria-label="Goto page"
-      >
-        {index}
-      </a>);
-  }
+  renderPaginationItems(paginator) {
+    const currentPage = paginator.getCurrentPage();
+    const lastPage = paginator.getLastPage();
 
-  /**
-   * get a styled current page item
-   * @param {*} index
-   * @return {*}
-   */
-  getCurrentPageItem(index) {
-    return (
-      <a
-        onClick = {this.goToPage.bind(this, index)}
-        className = "pagination-link is-current"
-        aria-label="Page 46"
-        aria-current="page">
-        {index}
-      </a>);
-  }
+    // render all pages
+    if (lastPage <= this.MAXIMUM_PAGES) {
+      return this.renderAllpages(paginator);
+    }
 
-  /**
-   * render a 3 dots separator between pages item
-   * @param {*} index
-   * @return {*}
-   */
-  getSeparator() {
-    return <span className="pagination-ellipsis">&hellip;</span>;
+    // middle pagination
+    if (currentPage - 4 > 1 && lastPage - currentPage > 4) {
+      return this.renderMiddlePages(currentPage, lastPage);
+    }
+
+    // first pagination
+    if (currentPage - 5 <= 1 && lastPage - currentPage > 4) {
+      return this.renderFirstPages(currentPage, lastPage);
+    }
+
+    // last pagination
+    if (lastPage - currentPage <= 4) {
+      return this.renderLastPages(currentPage, lastPage);
+    }
+
+    return [];
   }
 
   /**
    * render the pages from current to last page
-   * @param {Number} currentPage
-   * @param {Number} lastPage
+   * @param {Number} paginator
    * @return {*}
    */
-  renderAllpages(currentPage, lastPage) {
+  renderAllpages(paginator) {
+    const currentPage = paginator.getCurrentPage();
+    const lastPage = paginator.getTotalPages();
+    const firstPageIndex = 0; // TODO: paginator.getFirstPage
     let pages = [];
 
-    for (let i = 1; i <= lastPage; i ++ ) {
-      const page =
-        i === currentPage ? this.getCurrentPageItem(i) : this.getPageItem(i);
+    for (let label = 1, index = firstPageIndex; label <= lastPage; label++, index++) {
+      const page = index === currentPage ?
+        this.getPageItem(index, label, true) : this.getPageItem(index, label);
       pages.push(page);
     }
     return pages;
+  }
+
+  /**
+   * get a styled page item
+   *
+   * @param {*} index
+   * @param {*} label
+   * @param {*} isCurrentPage
+   * @return {*}
+   */
+  getPageItem(index, label = index, isCurrentPage = false) {
+    const clazz =
+      isCurrentPage ? 'pagination-link is-current' : 'pagination-link';
+    const ariaLabel = isCurrentPage ? 'page' + index : 'go to page' + index;
+    return (
+      <a
+        onClick = {this.goToPage.bind(this, index)}
+        className = {clazz}
+        aria-label = {ariaLabel}
+        aria-current = "page"
+      >
+        {label}
+      </a>);
   }
 
   /**
@@ -119,7 +137,7 @@ class Pagination extends Component {
 
     for (let i = 1; i <= 6; i ++ ) {
       const page =
-        i === currentPage ? this.getCurrentPageItem(i) : this.getPageItem(i);
+        i === currentPage ? this.getPageItem(i, true) : this.getPageItem(i);
       pages.push(page);
     }
     pages.push(this.getSeparator());
@@ -127,6 +145,16 @@ class Pagination extends Component {
 
     return pages;
   }
+
+  /**
+   * render a 3 dots separator between pages item
+   * @param {*} index
+   * @return {*}
+   */
+  getSeparator() {
+    return <span className="pagination-ellipsis">&hellip;</span>;
+  }
+
 
   /**
    * render the last pages like this
@@ -145,7 +173,7 @@ class Pagination extends Component {
     pages.push(this.getSeparator());
     for (let i = lastPage - 4; i <= lastPage; i ++ ) {
       const page =
-        i === currentPage ? this.getCurrentPageItem(i) : this.getPageItem(i);
+        i === currentPage ? this.getPageItem(i, true) : this.getPageItem(i);
       pages.push(page);
     }
     return pages;
@@ -172,7 +200,7 @@ class Pagination extends Component {
 
     for (let i = currentPage - 1; i <= currentPage + 1; i++) {
       const page =
-        i === currentPage ? this.getCurrentPageItem(i) : this.getPageItem(i);
+        i === currentPage ? this.getPageItem(i, true) : this.getPageItem(i);
       pages.push(page);
     }
 
@@ -182,37 +210,8 @@ class Pagination extends Component {
     return pages;
   }
 
-  /**
-   * render the pagination items
-   *
-   * @param {Paginator} paginator
-   * @return {*}
-   */
-  renderPaginationItems(paginator) {
-    const currentPage = paginator.currentPage();
-    const lastPage = paginator.lastPage();
-
-    // render all pages
-    if (lastPage <= this.MAXIMUM_PAGES) {
-      return this.renderAllpages(currentPage, lastPage);
-    }
-
-    // middle pagination
-    if (currentPage - 4 > 1 && lastPage - currentPage > 4) {
-      return this.renderMiddlePages(currentPage, lastPage);
-    }
-
-    // first pagination
-    if (currentPage - 5 <= 1 && lastPage - currentPage > 4) {
-      return this.renderFirstPages(currentPage, lastPage);
-    }
-
-    // last pagination
-    if (lastPage - currentPage <= 4) {
-      return this.renderLastPages(currentPage, lastPage);
-    }
-
-    return [];
+  shouldRender = () => {
+    return this.props.paginator.hasMorePages || this.props.paginator.hasPrevious;
   }
 
   /**
@@ -220,13 +219,13 @@ class Pagination extends Component {
    */
   render() {
     const paginator = this.props.paginator;
-    const currentPage = paginator.currentPage();
-    const hasMorePages = paginator.hasMorePages();
+    const currentPage = paginator.getCurrentPage();
+    const hasMorePages = paginator.hasMorePages;
     const pages = this.renderPaginationItems(paginator).map((page, index) => {
       return <li key={index}>{page}</li>;
     });
 
-    if (!paginator.shouldRender()) return null;
+    if (!this.shouldRender()) return null;
 
     return (
       <div className="pagination-container">

@@ -1,9 +1,8 @@
-
 /**
  * this class provides an interface to
  * handle the paginator data from the api responses
  */
-export default class Paginator {
+export default class PaginatorZeroIndexed {
   /**
      * Create a new paginator instance
      *
@@ -37,7 +36,7 @@ export default class Paginator {
      * @return {Number}
      */
   getCurrentPage() {
-    return this.currentPage;
+    return this.currentPage + 1;
   }
 
   /**
