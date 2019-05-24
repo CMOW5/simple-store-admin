@@ -18,9 +18,7 @@ import ResponsiveTable from 'components/table/ResponsiveTable';
 import Loading from 'components/utils/loading/Loading';
 import DeleteCategoryModal from './delete/DeleteCategoryModal';
 
-import Pagination from 'components/pagination/Pagination';
-
-/** */
+/** this component renders the categories table */
 class CategoriesTable extends Component {
   /**
    * @param {*} props
@@ -44,6 +42,7 @@ class CategoriesTable extends Component {
     this.onActionButtonClicked = this.onActionButtonClicked.bind(this);
     this.onDeleteSucess = this.onDeleteSucess.bind(this);
     this.onDeleteCancel = this.onDeleteCancel.bind(this);
+    this.onPageSelected = this.onPageSelected.bind(this);
   }
 
   /**
@@ -58,6 +57,7 @@ class CategoriesTable extends Component {
    * @param {object} params
    * @param {string} url
    * TODO: improve the setState calls
+   * TODO: improve the params
    */
   async fetchCategories(params={}, url) {
     params.keyword = this.state.searchKeyword;
@@ -153,8 +153,13 @@ class CategoriesTable extends Component {
     });
   }
 
-  onPageSelected = (url) => {
-    console.log(url);
+  /**
+   * an event triggered when a page has been selected in the pagination
+   * table
+   * @param {string} url the url to fetch the requested elements
+   */
+  onPageSelected(url) {
+    this.fetchCategories({}, url);
   }
 
   /**
@@ -170,10 +175,6 @@ class CategoriesTable extends Component {
             onSearch = {this.onSearch}
             onActionButtonClicked = {this.onActionButtonClicked}
             onCreateButtonClicked = {this.goToCategoryCreate}
-          />
-
-          <Pagination
-            paginator = {this.state.paginator}
             onPageSelected = {this.onPageSelected}
           />
 
@@ -183,6 +184,7 @@ class CategoriesTable extends Component {
             onDeleteSucess = {this.onDeleteSucess}
             onDeleteCancel = {this.onDeleteCancel}
           />
+
         </React.Fragment>
       );
   }
