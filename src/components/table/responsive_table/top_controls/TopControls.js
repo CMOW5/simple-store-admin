@@ -51,14 +51,14 @@ export default class TopControls extends Component {
 
         <div className="columns is-desktop is-centered">
 
-          <LeftButtons 
-            template = {template} 
+          <LeftButtons
+            template = {template}
             onButtonClicked = {this.onButtonClicked}
-            />
+          />
 
-          <SearchBar 
+          <SearchBar
             onSearch = {this.onSearch}
-            template = {template} 
+            template = {template}
           />
 
           {/* right side buttons */}
