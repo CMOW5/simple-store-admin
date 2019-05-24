@@ -3,7 +3,7 @@ import {Table} from './responsive_table/core/SuperResponsiveTable';
 import TopControls from './responsive_table/top_controls/TopControls';
 import TableHeader from './responsive_table/table_header/TableHeader';
 import TableBody from './responsive_table/table_body/TableBody';
-import TableFooter from './responsive_table/table_footer/TableFooter';
+import Pagination from 'components/pagination/Pagination';
 
 import {TableContext} from './responsive_table/context/table-context';
 
@@ -21,6 +21,14 @@ export default class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.onPageSelected = this.onPageSelected.bind(this);
+  }
+
+  /**
+   * @param {*} url
+   */
+  onPageSelected(url) {
+    this.props.onPageSelected(url);
   }
 
   /**
@@ -41,6 +49,11 @@ export default class ResponsiveTable extends Component {
           <TableHeader template = {template} />
           <TableBody template = {template} />
         </Table>
+
+        <Pagination
+          paginator = {this.props.paginator}
+          onPageSelected = {this.props.onPageSelected}
+        />
 
       </TableContext.Provider>
     );
