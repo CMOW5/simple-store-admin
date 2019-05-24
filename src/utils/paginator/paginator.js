@@ -77,6 +77,15 @@ export default class Paginator {
   }
 
   /**
+     * get the current page number.
+     *
+     * @return {Number}
+     */
+  getFirstPage() {
+    return 0;
+  }
+
+  /**
      * get the last page number
      *
      * @return {String}
@@ -90,9 +99,9 @@ export default class Paginator {
      *
      * @return {Bool}
      */
-//  hasMorePages() {
-//    return this.hasMorePages;
-//  }
+  //  hasMorePages() {
+  //    return this.hasMorePages;
+  //  }
 
   /**
      * get the total of items fetched
@@ -128,7 +137,7 @@ export default class Paginator {
      * @return {String}
      */
   buildUrl(page=1) {
-    return `${this.path}?page=${page}`;
+    return `${this.path}?page=${page}&size=${this.pageSize}`;
   }
 
   /**
