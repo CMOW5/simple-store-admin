@@ -36,7 +36,7 @@ class ProductsTable extends Component {
       isFetching: true,
     };
     this.fetchProducts = this.fetchProducts.bind(this);
-    this.renderMainTable = this.renderMainTable.bind(this);
+    this.onPageSelected = this.onPageSelected.bind(this);
 
     this.goToProductCreate = this.goToProductCreate.bind(this);
     this.goToProductEdit = this.goToProductEdit.bind(this);
@@ -76,30 +76,6 @@ class ProductsTable extends Component {
       tableTemplate: tableTemplate,
       isFetching: false,
     });
-  }
-
-  /**
-   * render the products table or a loading icon
-   * while the fetching is still in progress
-   *
-   * @param {array} productsRows
-   * @return {ReactNode}
-   * TODO: improve this function readability creating a new table component
-   * and making the function pure (state.isFetching)
-   */
-  renderMainTable() {
-    if (this.state.isFetching) {
-      return <Loading show={true} title="products" />;
-    } else {
-      return (
-        <ResponsiveTable
-          template = {this.state.tableTemplate}
-          onSearch = {this.onSearch}
-          onActionButtonClicked = {this.onActionButtonClicked}
-          onCreateButtonClicked = {this.goToProductCreate}
-        />
-      );
-    }
   }
 
   /**
@@ -186,21 +162,39 @@ class ProductsTable extends Component {
   }
 
   /**
+   * an event triggered when a page has been selected in the pagination
+   * table
+   * @param {string} url the url to fetch the requested elements
+   */
+  onPageSelected(url) {
+    this.fetchProducts({}, url);
+  }
+
+  /**
    * @return {ReactNode}
    */
   render() {
-    return (
-      <div>
-        {this.renderMainTable()}
+    return this.state.isFetching ? <Loading show={true} title="products" /> :
+      (
+        <React.Fragment>
+          <ResponsiveTable
+            template = {this.state.tableTemplate}
+            onSearch = {this.onSearch}
+            paginator = {this.state.paginator}
+            onActionButtonClicked = {this.onActionButtonClicked}
+            onCreateButtonClicked = {this.goToProductCreate}
+            onPageSelected = {this.onPageSelected}
+          />
 
-        <DeleteProductModal
-          show = {this.state.showDeleteModal}
-          product = {this.state.selectedProductToDelete}
-          onDeleteSucess = {this.onDeleteSucess}
-          onDeleteCancel = {this.onDeleteCancel}
-        />
-      </div>
-    );
+          <DeleteProductModal
+            show = {this.state.showDeleteModal}
+            product = {this.state.selectedProductToDelete}
+            onDeleteSucess = {this.onDeleteSucess}
+            onDeleteCancel = {this.onDeleteCancel}
+          />
+
+        </React.Fragment>
+      );
   }
 }
 
