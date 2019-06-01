@@ -59,42 +59,47 @@ export default class ContentMain extends Component {
     const productsCreateRoute = productsRoutes.create();
     const productsEditRoute = productsRoutes.edit();
 
+    const {classes} = this.props;
+
     return (
-      <div className="content-main">
-        <Switch className="content-main">
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <div className='content-main'>
+          <Switch className="content-main">
 
-          <Route exact path = '/'
-            component={DashBoard}/>
+            <Route exact path = '/'
+              component={DashBoard}/>
 
-          <Route exact path = {dashboardRoute}
-            component={DashBoard}/>
+            <Route exact path = {dashboardRoute}
+              component={DashBoard}/>
 
-          {/* products */}
-          <Route exact path = {productsListRoute}
-            component = {ProductsTable} />
-          <Route exact path ={productsCreateRoute}
-            component = {CreateProductForm} />
-          <Route exact path ={productsShowRoute}
-            component = {ShowProduct} />
-          <Route exact path = {productsEditRoute}
-            component = {EditProductForm}/>
+            {/* products */}
+            <Route exact path = {productsListRoute}
+              component = {ProductsTable} />
+            <Route exact path ={productsCreateRoute}
+              component = {CreateProductForm} />
+            <Route exact path ={productsShowRoute}
+              component = {ShowProduct} />
+            <Route exact path = {productsEditRoute}
+              component = {EditProductForm}/>
 
-          {/* categories */}
-          <Route exact path = {categoriesListRoute}
-            component = {CategoriesTable} />
-          <Route exact path ={categoriesCreateRoute}
-            component = {CreateCategoryForm} />
-          <Route exact path = {categoryShowRoute}
-            component = {ShowCategory} />
-          <Route exact path = {categoriesEditRoute}
-            component = {EditCategoryForm}/>
+            {/* categories */}
+            <Route exact path = {categoriesListRoute}
+              component = {CategoriesTable} />
+            <Route exact path ={categoriesCreateRoute}
+              component = {CreateCategoryForm} />
+            <Route exact path = {categoryShowRoute}
+              component = {ShowCategory} />
+            <Route exact path = {categoriesEditRoute}
+              component = {EditCategoryForm}/>
 
-          {/* settings */}
-          <Route exact path = {settingsRoute}
-            component = {SettingsPage}/>
+            {/* settings */}
+            <Route exact path = {settingsRoute}
+              component = {SettingsPage}/>
 
-        </Switch>
-      </div>
+          </Switch>
+        </div>
+      </main>
     );
   }
 }
