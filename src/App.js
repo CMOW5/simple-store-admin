@@ -6,7 +6,8 @@ import {withRouter} from 'react-router-dom';
 
 // redux
 import {connect} from 'react-redux';
-import {getCurrentUserAction, saveUser} from 'store/actions/user-actions';
+import {getCurrentUserAction, saveUser, clearUser} from
+  'store/actions/user-actions';
 
 /* styles */
 import './App.css';
@@ -17,6 +18,7 @@ import LoginPage from 'pages/login/LoginPage';
 import Main from 'pages/main/Main';
 
 // import TestPage from 'pages/test/TestPage';
+import {httpEvents} from 'services/api/http-requester';
 
 /**
  * the root app component
@@ -33,11 +35,40 @@ class App extends Component {
 
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.subcribeAuthEvents = this.subcribeAuthEvents.bind(this);
+    this.redirectToLogin = this.redirectToLogin.bind(this);
   }
 
   /** */
   componentDidMount() {
     this.loadCurrentlyLoggedInUser();
+    this.subcribeAuthEvents();
+  }
+
+  /** */
+  subcribeAuthEvents() {
+    this.subcription = httpEvents.subscribe({
+      next: (status) => {
+        switch (status) {
+        case 401:
+          this.redirectToLogin();
+          break;
+        default:
+          break;
+        }
+      },
+    });
+  }
+
+  /**
+   */
+  redirectToLogin() {
+    this.props.clearUser();
+  }
+
+  /** */
+  componentWillUnmount() {
+    this.subcription.unsubscribe();
   }
 
   /** */
@@ -108,6 +139,9 @@ const mapDispatchToProps = (dispatch) => {
     }, // key = prop name created by redux , value = method
     saveUser: (user) => {
       dispatch(saveUser(user));
+    }, // key = prop name created by redux , value = method
+    clearUser: () => {
+      dispatch(clearUser());
     }, // key = prop name created by redux , value = method
   };
 };
