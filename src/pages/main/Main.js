@@ -1,37 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import MainToolBar from 'components/navs/main_nav/MainToolBar';
-import ResponsiveDrawer from 'components/navs/side_nav/ResponsiveDrawer';
+import SideNav from 'components/navs/side_nav/ResponsiveDrawer';
 import ContentMain from './ContentMain';
 
 // styles
 import {withStyles} from '@material-ui/core/styles';
-
-const drawerWidth = 240;
-
-const styles = (theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    marginLeft: drawerWidth,
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-  },
-  menuButton: {
-    marginRight: 20,
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  toolbar: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3,
-  },
-});
+import styles from './main-styles';
 
 /** */
 class Main extends React.Component {
@@ -58,13 +33,9 @@ class Main extends React.Component {
 
     return (
       <div className={classes.root}>
-        <CssBaseline />
         <MainToolBar handleDrawerToggle = {this.toggleNavigationDrawer} />
-        <ResponsiveDrawer onRef={(ref) => (this.drawerRef = ref)} />
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <ContentMain />
-        </main>
+        <SideNav onRef={(ref) => (this.drawerRef = ref)} />
+        <ContentMain {...this.props} />
       </div>
     );
   }
