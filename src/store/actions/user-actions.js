@@ -18,6 +18,17 @@ export function saveUser(user) {
 }
 
 /**
+ * save the user data
+ * @param {*} user
+ * @return {Object} the new state
+ */
+export function clearUser() {
+  return {
+    type: UNAUTHENTICATED,
+  };
+}
+
+/**
  * signin action
  * @param {object} credentials
  * @return {Promise}
