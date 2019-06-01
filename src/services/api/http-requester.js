@@ -4,6 +4,10 @@ import axios from 'axios';
 import Logger from 'utils/logger/logger';
 import TokenHandler from './auth/utils/token-handler';
 
+import {Subject} from 'rxjs';
+
+export const httpEvents = new Subject();
+
 export default {
   submit: submit,
   get: getRequest,
@@ -54,16 +58,7 @@ export function submit(requestType, url, data = {}) {
       })
       .catch((error) => {
         Logger.log('Http error = ', error);
-        // this.onFail(error);
-        // TODO: this line is throwing an exception when response is undefined
-        // const status = error.response.status;
-        /* if (status === 401) {
-            // EventProvider.fire("unauthorized");
-          } */
-        if (isUnauthenticatedResponse(error.response)) {
-          redirectToLogin();
-        }
-
+        triggerStatusEvent(error);
         reject(error);
       });
   });
@@ -124,19 +119,12 @@ function deleteRequest(url) {
 
 /**
  *
- * @param {*} response
- * @return {boolean}
+ * @param {*} error
  */
-function isUnauthenticatedResponse(response) {
-  if (response && response.status) {
-    return response.status === 401;
-  } else {
-    return false;
+function triggerStatusEvent(error) {
+  if (error.response && error.response.status) {
+    httpEvents.next(error.response.status);
   }
 }
 
-/** */
-function redirectToLogin() {
-  TokenHandler.clearToken();
-  window.location.replace('http://localhost:3000/login');
-}
+
