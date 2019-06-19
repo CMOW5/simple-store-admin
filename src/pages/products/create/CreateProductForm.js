@@ -15,7 +15,7 @@ import Logger from 'utils/logger/logger';
 
 /* components */
 import CreateHeader from 'pages/utils/list_headers/CreateHeader';
-import ImagePicker from 'components/images/image_picker/ImagePicker';
+import ImageEditor from 'components/images/image_editor/ImageEditor';
 import SimpleNotification
   from 'components/modals/simple_notification/SimpleNotification';
 import Loading from 'components/utils/loading/Loading';
@@ -417,7 +417,7 @@ class CreateProductForm extends Component {
             className="field">
             <label className="label">Images</label>
             <div className="control">
-              <ImagePicker onImagesLoaded={this.saveImages}/>
+              <ImageEditor onImagesLoaded={this.saveImages}/>
             </div>
           </div>
 
